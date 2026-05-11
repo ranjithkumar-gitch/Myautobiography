@@ -45,7 +45,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   bool termsAccepted = false;
-  CountryCode selectedCountryCode = CountryCode.fromDialCode('+91');
+  CountryCode selectedCountryCode = CountryCode.fromDialCode('+1');
   bool _isLoading = false;
   String? _errorMessage;
 
@@ -169,7 +169,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.asset('assets/image1.png', height: 60),
+                  Image.asset('assets/appbar_logo.png', height: 60),
                   const SizedBox(width: 5),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -201,7 +201,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         body: Stack(
           children: [
             Positioned.fill(
-              child: Image.asset('assets/bg_1411.PNG', fit: BoxFit.cover),
+              child: Image.asset('assets/bg_1411.png', fit: BoxFit.cover),
             ),
             //Logo in top left
             // Positioned(
@@ -331,41 +331,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset('assets/bg_1411.PNG', fit: BoxFit.cover),
+            child: Image.asset('assets/bg_1411.png', fit: BoxFit.cover),
           ),
           // Close button for mobile UI
-          Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 16.0, right: 8.0),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(24),
-                  onTap: () {
-                    Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        builder: (context) => OnBoardingscreen(),
-                      ),
-                      (route) => false,
-                    );
-                  },
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.black.withOpacity(0.7),
-                      border: Border.all(color: kgoldColor, width: 2),
-                    ),
-                    child: const Center(
-                      child: Icon(Icons.close, color: kgoldColor, size: 22),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
+          // Align(
+          //   alignment: Alignment.topRight,
+          //   child: Padding(
+          //     padding: const EdgeInsets.only(top: 16.0, right: 8.0),
+          //     child: Material(
+          //       color: Colors.transparent,
+          //       child: InkWell(
+          //         borderRadius: BorderRadius.circular(24),
+          //         onTap: () {
+          //           Navigator.of(context).pushAndRemoveUntil(
+          //             MaterialPageRoute(
+          //               builder: (context) => OnBoardingscreen(),
+          //             ),
+          //             (route) => false,
+          //           );
+          //         },
+          //         child: Container(
+          //           width: 40,
+          //           height: 40,
+          //           decoration: BoxDecoration(
+          //             shape: BoxShape.circle,
+          //             color: Colors.black.withOpacity(0.7),
+          //             border: Border.all(color: kgoldColor, width: 2),
+          //           ),
+          //           child: const Center(
+          //             child: Icon(Icons.close, color: kgoldColor, size: 22),
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
@@ -1123,7 +1123,7 @@ class _PhoneRowState extends State<_PhoneRow> {
   bool _hasFocus = false;
   bool _hasValue = false;
   late final TextEditingController _controller;
-  CountryCode _selectedCountryCode = CountryCode.fromDialCode('+91');
+  CountryCode? _selectedCountryCode;
 
   @override
   void initState() {
@@ -1175,36 +1175,54 @@ class _PhoneRowState extends State<_PhoneRow> {
                   if (widget.onCountryChanged != null)
                     widget.onCountryChanged!(code);
                 },
-                initialSelection: _selectedCountryCode.code,
-                favorite: ['+91', 'IN'],
+                initialSelection: 'CA', // Default selection is Canada
+                favorite: const [],
                 showCountryOnly: false,
                 showOnlyCountryWhenClosed: false,
                 alignLeft: true,
+                headerTextStyle: TextStyle(
+                  fontSize: 18,
+                  color: kgoldColor,
+                  fontWeight: FontWeight.w400,
+                ),
                 dialogSize: const Size(350, 500),
                 showFlagMain: true,
                 showFlagDialog: true,
-                textStyle: const TextStyle(color: Colors.white, fontSize: 16),
-                searchStyle: const TextStyle(color: Colors.white),
+                textStyle: const TextStyle(fontSize: 0), // Hide placeholder
+                searchStyle: TextStyle(color: kgoldColor),
+                dialogTextStyle: TextStyle(
+                  color: kgoldColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                ),
                 dialogBackgroundColor: Color(0xFF232323),
                 barrierColor: Colors.black54,
-                builder: (country) => Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (country != null && country.flagUri != null)
-                      Image.asset(
-                        country.flagUri!,
-                        package: 'country_code_picker',
-                        width: 24,
-                        height: 18,
+                builder: (country) {
+                  if (country == null ||
+                      country.dialCode == null ||
+                      country.dialCode!.isEmpty) {
+                    return const SizedBox.shrink();
+                  }
+                  // Only show after user selection
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (country.flagUri != null)
+                        Image.asset(
+                          country.flagUri!,
+                          package: 'country_code_picker',
+                          width: 24,
+                          height: 18,
+                        ),
+                      const SizedBox(width: 6),
+                      Text(
+                        country.dialCode!,
+                        style: TextStyle(color: kwhiteColor, fontSize: 16),
                       ),
-                    const SizedBox(width: 6),
-                    Text(
-                      country != null ? country.dialCode ?? '' : '',
-                      style: const TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ],
-                ),
+                    ],
+                  );
+                },
               ),
             ),
           ),

@@ -34,7 +34,7 @@ class SuccessScreen2 extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset('assets/image1.png', height: 60),
+                Image.asset('assets/appbar_logo.png', height: 60),
                 const SizedBox(width: 5),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,7 +69,7 @@ class SuccessScreen2 extends StatelessWidget {
           return Stack(
             children: [
               Positioned.fill(
-                child: Image.asset('assets/bg_1411.PNG', fit: BoxFit.cover),
+                child: Image.asset('assets/bg_1411.png', fit: BoxFit.cover),
               ),
               // Close button for mobile UI only
               if (!isWide)
@@ -89,22 +89,22 @@ class SuccessScreen2 extends StatelessWidget {
                             (route) => false,
                           );
                         },
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.black.withOpacity(0.7),
-                            border: Border.all(color: kgoldColor, width: 2),
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.close,
-                              color: kgoldColor,
-                              size: 22,
-                            ),
-                          ),
-                        ),
+                        // child: Container(
+                        //   width: 40,
+                        //   height: 40,
+                        //   decoration: BoxDecoration(
+                        //     shape: BoxShape.circle,
+                        //     color: Colors.black.withOpacity(0.7),
+                        //     border: Border.all(color: kgoldColor, width: 2),
+                        //   ),
+                        //   child: const Center(
+                        //     child: Icon(
+                        //       Icons.close,
+                        //       color: kgoldColor,
+                        //       size: 22,
+                        //     ),
+                        //   ),
+                        // ),
                       ),
                     ),
                   ),
@@ -123,7 +123,7 @@ class SuccessScreen2 extends StatelessWidget {
                             child: Image.asset(
                               'assets/img_right.png',
                               height: 600,
-                              fit: BoxFit.cover,
+                              fit: BoxFit.contain,
                               errorBuilder: (context, error, stackTrace) =>
                                   Container(),
                             ),
@@ -272,7 +272,7 @@ class SuccessScreen2 extends StatelessWidget {
                                     shaderCallback: (bounds) =>
                                         goldTextGradient.createShader(bounds),
                                     child: Text(
-                                      'HAVE A STORY THE WORLD SHOULD EXPERIENCE?',
+                                      'HAVE A STORY THE WORLD SHOULD EXPERIENCE',
                                       textAlign: TextAlign.center,
                                       style: GoogleFonts.poppins(
                                         color: kwhiteColor,
@@ -577,10 +577,11 @@ class _InlineLegacyCountdownState extends State<_InlineLegacyCountdown> {
     // Set target date to August 9th, 12:00 AM (midnight) of the current or next year if already passed
     final now = DateTime.now();
     int year = now.year;
-    final august9 = DateTime(year, 8, 9, 0, 0, 0);
+    // Set to August 9th, 12:00 PM (noon)
+    final august9 = DateTime(year, 8, 9, 12, 0, 0);
     if (now.isAfter(august9)) {
       // If already past this year's Aug 9, use next year
-      targetDate = DateTime(year + 1, 8, 9, 0, 0, 0);
+      targetDate = DateTime(year + 1, 8, 9, 12, 0, 0);
     } else {
       targetDate = august9;
     }

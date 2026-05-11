@@ -33,7 +33,7 @@ class OnBoardingscreen extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.asset('assets/image1.png', height: 60),
+                  Image.asset('assets/appbar_logo.png', height: 60),
                   const SizedBox(width: 5),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +65,7 @@ class OnBoardingscreen extends StatelessWidget {
           children: [
             // Starry background
             Positioned.fill(
-              child: Image.asset('assets/bg_1411.PNG', fit: BoxFit.cover),
+              child: Image.asset('assets/bg_1411.png', fit: BoxFit.cover),
             ),
             // Gold concentric circles (custom painter)
             // Positioned(
@@ -364,7 +364,7 @@ class OnBoardingscreen extends StatelessWidget {
         children: [
           // Responsive background image
           Positioned.fill(
-            child: Image.asset('assets/bg_1411.PNG', fit: BoxFit.cover),
+            child: Image.asset('assets/bg_1411.png', fit: BoxFit.cover),
           ),
           SafeArea(
             child: Center(

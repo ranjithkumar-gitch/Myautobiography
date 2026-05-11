@@ -26,7 +26,7 @@ class StarRequestSubmittedScreen extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset('assets/image1.png', height: 60),
+                Image.asset('assets/appbar_logo.png', height: 60),
                 const SizedBox(width: 5),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,7 +57,7 @@ class StarRequestSubmittedScreen extends StatelessWidget {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset('assets/bg_1411.PNG', fit: BoxFit.cover),
+            child: Image.asset('assets/bg_1411.png', fit: BoxFit.cover),
           ),
           SafeArea(
             child: LayoutBuilder(
@@ -77,7 +77,7 @@ class StarRequestSubmittedScreen extends StatelessWidget {
                           child: Image.asset(
                             'assets/5thscreen.PNG',
                             height: 600,
-                            fit: BoxFit.cover,
+                            fit: BoxFit.contain,
                             errorBuilder: (context, error, stackTrace) =>
                                 Container(),
                           ),
@@ -631,7 +631,7 @@ class _InspireChevronBox extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'If selected, your story could be experienced by audiences accros the world.',
+                'If selected, your story could be experienced by audiences across the world.',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
                   color: Colors.white,

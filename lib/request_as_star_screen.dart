@@ -146,7 +146,7 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.asset('assets/image1.png', height: 60),
+                  Image.asset('assets/appbar_logo.png', height: 60),
                   const SizedBox(width: 5),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,49 +177,49 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
         body: Stack(
           children: [
             Positioned.fill(
-              child: Image.asset('assets/bg_1411.PNG', fit: BoxFit.cover),
+              child: Image.asset('assets/bg_1411.png', fit: BoxFit.cover),
             ),
             // Close button for mobile UI only
             LayoutBuilder(
               builder: (context, constraints) {
                 final isWide = constraints.maxWidth > 900;
                 if (!isWide) {
-                  return Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 16.0, right: 8.0),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(24),
-                          onTap: () {
-                            Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                builder: (context) => OnBoardingscreen(),
-                              ),
-                              (route) => false,
-                            );
-                          },
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.black.withOpacity(0.7),
-                              border: Border.all(color: kgoldColor, width: 2),
-                            ),
-                            child: const Center(
-                              child: Icon(
-                                Icons.close,
-                                color: kgoldColor,
-                                size: 22,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
+                  // return Align(
+                  //   alignment: Alignment.topRight,
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.only(top: 16.0, right: 8.0),
+                  //     child: Material(
+                  //       color: Colors.transparent,
+                  //       child: InkWell(
+                  //         borderRadius: BorderRadius.circular(24),
+                  //         onTap: () {
+                  //           Navigator.of(context).pushAndRemoveUntil(
+                  //             MaterialPageRoute(
+                  //               builder: (context) => OnBoardingscreen(),
+                  //             ),
+                  //             (route) => false,
+                  //           );
+                  //         },
+                  //         child: Container(
+                  //           width: 40,
+                  //           height: 40,
+                  //           decoration: BoxDecoration(
+                  //             shape: BoxShape.circle,
+                  //             color: Colors.black.withOpacity(0.7),
+                  //             border: Border.all(color: kgoldColor, width: 2),
+                  //           ),
+                  //           child: const Center(
+                  //             child: Icon(
+                  //               Icons.close,
+                  //               color: kgoldColor,
+                  //               size: 22,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // );
                 }
                 return const SizedBox.shrink();
               },
@@ -274,7 +274,7 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      const SizedBox(height: 5),
+                                      // const SizedBox(height: 5),
                                       Row(
                                         children: [
                                           Expanded(
@@ -402,7 +402,6 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
                                                         final state =
                                                             await _youtubeController
                                                                 .playerState;
-
                                                         if (state ==
                                                             PlayerState
                                                                 .playing) {
@@ -412,7 +411,6 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
                                                           _youtubeController
                                                               .playVideo();
                                                         }
-
                                                         setState(() {});
                                                       },
                                                     ),
@@ -442,52 +440,98 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
                                                   ),
                                                 ),
 
-                                              /// Fullscreen IconButton always on top
-                                              if (_isYoutubeReady)
-                                                Positioned(
-                                                  right: 12,
-                                                  bottom: 12,
-                                                  child: Material(
-                                                    color: Colors.transparent,
-                                                    child: IconButton(
-                                                      padding: EdgeInsets.zero,
-                                                      constraints:
-                                                          const BoxConstraints(),
-                                                      icon: const Icon(
-                                                        Icons.fullscreen,
-                                                        color: kgoldColor,
-                                                        size: 32,
-                                                      ),
-                                                      onPressed: () async {
-                                                        await _youtubeController
-                                                            .pauseVideo();
-                                                        final videoId =
-                                                            YoutubePlayerController.convertUrlToId(
-                                                              'https://www.youtube.com/watch?v=Riff0rzYCnQ',
-                                                            ) ??
-                                                            'Riff0rzYCnQ';
-                                                        Navigator.of(
-                                                          context,
-                                                          rootNavigator: true,
-                                                        ).push(
-                                                          MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                FullScreenYoutubePlayer(
-                                                                  videoId:
-                                                                      videoId,
-                                                                ),
-                                                          ),
-                                                        );
-                                                      },
-                                                    ),
-                                                  ),
-                                                ),
+                                              /// Fullscreen IconButton always on top (now also for isWide)
+                                              // if (_isYoutubeReady)
+                                              //   Positioned(
+                                              //     right: 12,
+                                              //     bottom: 12,
+                                              //     child: Material(
+                                              //       color: Colors.transparent,
+                                              //       child: IconButton(
+                                              //         padding: EdgeInsets.zero,
+                                              //         constraints:
+                                              //             const BoxConstraints(),
+                                              //         icon: const Icon(
+                                              //           Icons.fullscreen,
+                                              //           color: kgoldColor,
+                                              //           size: 32,
+                                              //         ),
+                                              //         onPressed: () async {
+                                              //           await _youtubeController
+                                              //               .pauseVideo();
+                                              //           final videoId =
+                                              //               YoutubePlayerController.convertUrlToId(
+                                              //                 'https://www.youtube.com/watch?v=Riff0rzYCnQ',
+                                              //               ) ??
+                                              //               'Riff0rzYCnQ';
+                                              //           // Use SchedulerBinding to ensure navigation works in all layouts
+                                              //           WidgetsBinding.instance
+                                              //               .addPostFrameCallback((
+                                              //                 _,
+                                              //               ) {
+                                              //                 Navigator.of(
+                                              //                   context,
+                                              //                   rootNavigator:
+                                              //                       true,
+                                              //                 ).push(
+                                              //                   MaterialPageRoute(
+                                              //                     builder:
+                                              //                         (
+                                              //                           context,
+                                              //                         ) => FullScreenYoutubePlayer(
+                                              //                           videoId:
+                                              //                               videoId,
+                                              //                         ),
+                                              //                   ),
+                                              //                 );
+                                              //               });
+                                              //         },
+                                              //       ),
+                                              //     ),
+                                              //   ),
                                             ],
                                           ),
                                         ),
                                       ),
 
                                       const SizedBox(height: 15),
+                                      GestureDetector(
+                                        onTap: () async {
+                                          await _youtubeController.pauseVideo();
+                                          final videoId =
+                                              YoutubePlayerController.convertUrlToId(
+                                                'https://www.youtube.com/watch?v=Riff0rzYCnQ',
+                                              ) ??
+                                              'Riff0rzYCnQ';
+                                          // Use SchedulerBinding to ensure navigation works in all layouts
+                                          WidgetsBinding.instance
+                                              .addPostFrameCallback((_) {
+                                                Navigator.of(
+                                                  context,
+                                                  rootNavigator: true,
+                                                ).push(
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        FullScreenYoutubePlayer(
+                                                          videoId: videoId,
+                                                        ),
+                                                  ),
+                                                );
+                                              });
+                                        },
+                                        child: Text(
+                                          'Click here for full screen view',
+
+                                          textAlign: TextAlign.center,
+                                          style: GoogleFonts.poppins(
+                                            color: kgoldColor,
+
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 15),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -545,7 +589,7 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
                                         ],
                                       ),
 
-                                      const SizedBox(height: 45),
+                                      const SizedBox(height: 20),
                                       SizedBox(
                                         width: double.infinity,
                                         height: 60,
@@ -671,23 +715,26 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
                                 ),
                                 const SizedBox(height: 16),
 
-                                AspectRatio(
-                                  aspectRatio: 16 / 9,
-                                  child: Container(
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: kgoldColor,
-                                        width: 1,
-                                      ),
-                                      borderRadius: BorderRadius.circular(0),
+                                Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: kgoldColor,
+                                      width: 1,
                                     ),
-                                    clipBehavior: Clip.antiAlias,
-                                    child: Stack(
-                                      fit: StackFit.loose,
-                                      children: [
-                                        /// YouTube Video
-                                        _isYoutubeReady
+                                    borderRadius: BorderRadius.circular(0),
+                                  ),
+                                  clipBehavior: Clip.antiAlias,
+                                  child: Stack(
+                                    children: [
+                                      // Fixed height for mobile/tablet
+                                      SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.width *
+                                            9 /
+                                            16,
+                                        width: double.infinity,
+                                        child: _isYoutubeReady
                                             ? YoutubePlayer(
                                                 controller: _youtubeController,
                                                 aspectRatio: 16 / 9,
@@ -701,97 +748,88 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
                                                       ),
                                                 ),
                                               ),
-
-                                        /// Center Play/Pause Button
-                                        if (_isYoutubeReady)
-                                          IgnorePointer(
-                                            ignoring: true,
-                                            child: Center(
-                                              child: GestureDetector(
-                                                onTap: () async {
-                                                  final state =
-                                                      await _youtubeController
-                                                          .playerState;
-
-                                                  if (state ==
-                                                      PlayerState.playing) {
-                                                    _youtubeController
-                                                        .pauseVideo();
-                                                  } else {
-                                                    _youtubeController
-                                                        .playVideo();
-                                                  }
-
-                                                  setState(() {});
-                                                },
-                                              ),
-                                            ),
-                                          ),
-
-                                        /// Bottom Controls (without fullscreen)
-                                        if (_isYoutubeReady)
-                                          Positioned(
-                                            left: 0,
-                                            right: 0,
-                                            bottom: 0,
-                                            child: Container(
-                                              color: Colors.black.withOpacity(
-                                                0.85,
-                                              ),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 8,
-                                                    vertical: 4,
+                                      ),
+                                      // Fullscreen IconButton always on top
+                                      // if (_isYoutubeReady)
+                                      //   Positioned(
+                                      //     right: 12,
+                                      //     bottom: 12,
+                                      //     child: Material(
+                                      //       color: Colors.transparent,
+                                      //       child: IconButton(
+                                      //         padding: EdgeInsets.zero,
+                                      //         constraints:
+                                      //             const BoxConstraints(),
+                                      //         icon: const Icon(
+                                      //           Icons.fullscreen,
+                                      //           color: kgoldColor,
+                                      //           size: 32,
+                                      //         ),
+                                      //         onPressed: () async {
+                                      //           await _youtubeController
+                                      //               .pauseVideo();
+                                      //           final videoId =
+                                      //               YoutubePlayerController.convertUrlToId(
+                                      //                 'https://www.youtube.com/watch?v=Riff0rzYCnQ',
+                                      //               ) ??
+                                      //               'Riff0rzYCnQ';
+                                      //           WidgetsBinding.instance
+                                      //               .addPostFrameCallback((_) {
+                                      //                 Navigator.of(
+                                      //                   context,
+                                      //                   rootNavigator: true,
+                                      //                 ).push(
+                                      //                   MaterialPageRoute(
+                                      //                     builder: (context) =>
+                                      //                         FullScreenYoutubePlayer(
+                                      //                           videoId:
+                                      //                               videoId,
+                                      //                         ),
+                                      //                   ),
+                                      //                 );
+                                      //               });
+                                      //         },
+                                      //       ),
+                                      //     ),
+                                      //   ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 15),
+                                GestureDetector(
+                                  onTap: () async {
+                                    await _youtubeController.pauseVideo();
+                                    final videoId =
+                                        YoutubePlayerController.convertUrlToId(
+                                          'https://www.youtube.com/watch?v=Riff0rzYCnQ',
+                                        ) ??
+                                        'Riff0rzYCnQ';
+                                    // Use SchedulerBinding to ensure navigation works in all layouts
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) {
+                                          Navigator.of(
+                                            context,
+                                            rootNavigator: true,
+                                          ).push(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  FullScreenYoutubePlayer(
+                                                    videoId: videoId,
                                                   ),
-                                              // child: Row(
-                                              //   children: [
-                                              //     // const Spacer(),
-                                              //     // Fullscreen button moved to top of stack
-                                              //   ],
-                                              // ),
                                             ),
-                                          ),
+                                          );
+                                        });
+                                  },
 
-                                        /// Fullscreen IconButton always on top
-                                        if (_isYoutubeReady)
-                                          Positioned(
-                                            right: 12,
-                                            bottom: 12,
-                                            child: Material(
-                                              color: Colors.transparent,
-                                              child: IconButton(
-                                                padding: EdgeInsets.zero,
-                                                constraints:
-                                                    const BoxConstraints(),
-                                                icon: const Icon(
-                                                  Icons.fullscreen,
-                                                  color: kgoldColor,
-                                                  size: 32,
-                                                ),
-                                                onPressed: () async {
-                                                  await _youtubeController
-                                                      .pauseVideo();
-                                                  final videoId =
-                                                      YoutubePlayerController.convertUrlToId(
-                                                        'https://www.youtube.com/watch?v=Riff0rzYCnQ',
-                                                      ) ??
-                                                      'Riff0rzYCnQ';
-                                                  Navigator.of(
-                                                    context,
-                                                    rootNavigator: true,
-                                                  ).push(
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          FullScreenYoutubePlayer(
-                                                            videoId: videoId,
-                                                          ),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                      ],
+                                  child: Text(
+                                    'Click here for full screen view',
+
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.poppins(
+                                      color: kgoldColor,
+
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
                                     ),
                                   ),
                                 ),
