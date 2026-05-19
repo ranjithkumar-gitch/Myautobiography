@@ -45,7 +45,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   bool termsAccepted = false;
-  CountryCode selectedCountryCode = CountryCode.fromDialCode('+1');
+  CountryCode? selectedCountryCode;
   bool _isLoading = false;
   String? _errorMessage;
 
@@ -79,6 +79,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         userNameController.text.isEmpty ||
         emailController.text.isEmpty ||
         phoneController.text.isEmpty ||
+        selectedCountryCode == null ||
         selectedDay == null ||
         selectedMonth == null ||
         selectedYear == null ||
@@ -96,7 +97,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       firstName: firstNameController.text.trim(),
       lastName: lastNameController.text.trim(),
       email: emailController.text.trim(),
-      phone: (selectedCountryCode.dialCode ?? '') + phoneController.text.trim(),
+      phone:
+          (selectedCountryCode?.dialCode ?? '') + phoneController.text.trim(),
       dob: dob,
       displayName: userNameController.text.trim(),
     );
@@ -333,39 +335,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Positioned.fill(
             child: Image.asset('assets/bg_1411.png', fit: BoxFit.cover),
           ),
-          // Close button for mobile UI
-          // Align(
-          //   alignment: Alignment.topRight,
-          //   child: Padding(
-          //     padding: const EdgeInsets.only(top: 16.0, right: 8.0),
-          //     child: Material(
-          //       color: Colors.transparent,
-          //       child: InkWell(
-          //         borderRadius: BorderRadius.circular(24),
-          //         onTap: () {
-          //           Navigator.of(context).pushAndRemoveUntil(
-          //             MaterialPageRoute(
-          //               builder: (context) => OnBoardingscreen(),
-          //             ),
-          //             (route) => false,
-          //           );
-          //         },
-          //         child: Container(
-          //           width: 40,
-          //           height: 40,
-          //           decoration: BoxDecoration(
-          //             shape: BoxShape.circle,
-          //             color: Colors.black.withOpacity(0.7),
-          //             border: Border.all(color: kgoldColor, width: 2),
-          //           ),
-          //           child: const Center(
-          //             child: Icon(Icons.close, color: kgoldColor, size: 22),
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
+
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
@@ -378,8 +348,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       const SizedBox(height: 40),
                       // Logo always on top, centered
                       SizedBox(
-                        height: 180,
-                        width: 180,
+                        height: 250,
+                        width: 250,
                         child: Image.asset(
                           'assets/logo_4kquality.png',
                           fit: BoxFit.contain,
@@ -443,7 +413,7 @@ class _RegisterContent extends StatelessWidget {
   final bool termsAccepted;
   final bool isLoading;
   final String? errorMessage;
-  final CountryCode selectedCountryCode;
+  final CountryCode? selectedCountryCode;
   final GestureRecognizer termsTapRecognizer;
   final void Function(String?, String?, String?) onChangedDOB;
   final void Function(CountryCode) onChangedCountry;
@@ -1175,7 +1145,7 @@ class _PhoneRowState extends State<_PhoneRow> {
                   if (widget.onCountryChanged != null)
                     widget.onCountryChanged!(code);
                 },
-                initialSelection: 'CA', // Default selection is Canada
+                initialSelection: null,
                 favorite: const [],
                 showCountryOnly: false,
                 showOnlyCountryWhenClosed: false,
@@ -1198,27 +1168,50 @@ class _PhoneRowState extends State<_PhoneRow> {
                 dialogBackgroundColor: Color(0xFF232323),
                 barrierColor: Colors.black54,
                 builder: (country) {
-                  if (country == null ||
-                      country.dialCode == null ||
-                      country.dialCode!.isEmpty) {
-                    return const SizedBox.shrink();
+                  if (_selectedCountryCode == null ||
+                      _selectedCountryCode!.dialCode == null ||
+                      _selectedCountryCode!.dialCode!.isEmpty) {
+                    return const Padding(
+                      padding: EdgeInsets.only(right: 6),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Icon(
+                          Icons.arrow_drop_down_rounded,
+                          color: kgoldColor,
+                          size: 24,
+                        ),
+                      ),
+                    );
                   }
-                  // Only show after user selection
+
                   return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      if (country.flagUri != null)
-                        Image.asset(
-                          country.flagUri!,
-                          package: 'country_code_picker',
-                          width: 24,
-                          height: 18,
+                      Row(
+                        children: [
+                          const SizedBox(width: 8),
+                          if (_selectedCountryCode!.flagUri != null)
+                            Image.asset(
+                              _selectedCountryCode!.flagUri!,
+                              package: 'country_code_picker',
+                              width: 24,
+                              height: 18,
+                            ),
+                          const SizedBox(width: 6),
+                          Text(
+                            _selectedCountryCode!.dialCode!,
+                            style: TextStyle(color: kwhiteColor, fontSize: 16),
+                          ),
+                        ],
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(right: 6),
+                        child: Icon(
+                          Icons.arrow_drop_down_rounded,
+                          color: kgoldColor,
+                          size: 20,
                         ),
-                      const SizedBox(width: 6),
-                      Text(
-                        country.dialCode!,
-                        style: TextStyle(color: kwhiteColor, fontSize: 16),
                       ),
                     ],
                   );
