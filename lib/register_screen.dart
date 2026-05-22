@@ -91,7 +91,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
     final dob =
-        "${selectedYear!}-${selectedMonth!.padLeft(2, '0')}-${selectedDay!.padLeft(2, '0')}";
+        "${selectedMonth!.padLeft(2, '0')}-${selectedDay!.padLeft(2, '0')}-${selectedYear!}";
     final req = RegisterRequest(
       role: 'stargazer',
       firstName: firstNameController.text.trim(),
@@ -203,7 +203,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         body: Stack(
           children: [
             Positioned.fill(
-              child: Image.asset('assets/bg_1411.png', fit: BoxFit.cover),
+              child: Image.asset('assets/bg_1411.jpg', fit: BoxFit.cover),
             ),
             //Logo in top left
             // Positioned(
@@ -258,14 +258,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     flex: 6,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Center(
-                        child: Image.asset(
-                          'assets/image1.png',
-                          height: 600,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              Container(),
-                        ),
+                      child: Image.asset(
+                        'assets/image1.png',
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Container(),
                       ),
                     ),
                   ),
@@ -273,51 +270,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Expanded(
                     flex: 6,
                     child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 0.0,
-                          vertical: 0.0,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            // Header
-                            const SizedBox(height: 5),
-                            ConstrainedBox(
-                              constraints: const BoxConstraints(maxWidth: 500),
-                              child: _RegisterContent(
-                                isWide: true,
-                                firstNameController: firstNameController,
-                                lastNameController: lastNameController,
-                                userNameController: userNameController,
-                                emailController: emailController,
-                                phoneController: phoneController,
-                                selectedMonth: selectedMonth,
-                                selectedDay: selectedDay,
-                                selectedYear: selectedYear,
-                                termsAccepted: termsAccepted,
-                                isLoading: _isLoading,
-                                errorMessage: _errorMessage,
-                                selectedCountryCode: selectedCountryCode,
-                                termsTapRecognizer: _termsTapRecognizer,
-                                onChangedDOB: (m, d, y) {
-                                  setState(() {
-                                    selectedMonth = m;
-                                    selectedDay = d;
-                                    selectedYear = y;
-                                  });
-                                },
-                                onChangedCountry: (code) =>
-                                    setState(() => selectedCountryCode = code),
-                                onChangedTerms: (v) =>
-                                    setState(() => termsAccepted = v ?? false),
-                                onRegister: _onRegister,
-                              ),
-                            ),
-                          ],
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 500),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: _RegisterContent(
+                            isWide: true,
+                            firstNameController: firstNameController,
+                            lastNameController: lastNameController,
+                            userNameController: userNameController,
+                            emailController: emailController,
+                            phoneController: phoneController,
+                            selectedMonth: selectedMonth,
+                            selectedDay: selectedDay,
+                            selectedYear: selectedYear,
+                            termsAccepted: termsAccepted,
+                            isLoading: _isLoading,
+                            errorMessage: _errorMessage,
+                            selectedCountryCode: selectedCountryCode,
+                            termsTapRecognizer: _termsTapRecognizer,
+                            onChangedDOB: (m, d, y) {
+                              setState(() {
+                                selectedMonth = m;
+                                selectedDay = d;
+                                selectedYear = y;
+                              });
+                            },
+                            onChangedCountry: (code) =>
+                                setState(() => selectedCountryCode = code),
+                            onChangedTerms: (v) =>
+                                setState(() => termsAccepted = v ?? false),
+                            onRegister: _onRegister,
+                          ),
                         ),
                       ),
                     ),
+                  ),
                   ),
                 ],
               ),
@@ -330,10 +319,51 @@ class _RegisterScreenState extends State<RegisterScreen> {
     // Default: mobile/tablet UI
     return Scaffold(
       backgroundColor: Colors.black,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(80),
+        child: AppBar(
+          backgroundColor: Colors.black.withValues(alpha: 0.2),
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          titleSpacing: 0,
+          title: Padding(
+            padding: const EdgeInsets.only(left: 16, top: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset('assets/appbar_logo.png', height: 44),
+                const SizedBox(width: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'MY AUTOBIOGRAPHY',
+                      style: GoogleFonts.bebasNeue(
+                        color: const Color(0xffc18e3b),
+                        fontSize: 18,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                    Text(
+                      '"Live a Life & Leave a Legacy"',
+                      style: GoogleFonts.poppins(
+                        color: Colors.white70,
+                        fontSize: 10,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset('assets/bg_1411.png', fit: BoxFit.cover),
+            child: Image.asset('assets/bg_1411.jpg', fit: BoxFit.cover),
           ),
 
           SafeArea(
@@ -489,28 +519,27 @@ class _RegisterContent extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: GoogleFonts.bebasNeue(
                     color: Colors.white,
-                    fontSize: 60,
+                    fontSize: 44,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 0,
                   ),
                 ),
               ),
-              // const SizedBox(height: 4),
               Container(
                 height: 1.5,
                 width: 80,
                 color: kgoldColor.withOpacity(0.5),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               Text(
                 'Takes Less than 30 seconds.',
                 style: GoogleFonts.poppins(
                   color: kwhiteColor,
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 4),
             ],
           )
         else
@@ -613,7 +642,7 @@ class _RegisterContent extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 15),
+        SizedBox(height: isWide ? 8 : 15),
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
@@ -641,7 +670,7 @@ class _RegisterContent extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 15),
+        SizedBox(height: isWide ? 8 : 15),
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
@@ -657,7 +686,7 @@ class _RegisterContent extends StatelessWidget {
           hint: 'Enter your Email',
           controller: emailController,
         ),
-        const SizedBox(height: 15),
+        SizedBox(height: isWide ? 8 : 15),
         // Date of Birth
         Align(
           alignment: Alignment.centerLeft,
@@ -671,7 +700,7 @@ class _RegisterContent extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         _DateOfBirthRow(onChanged: onChangedDOB),
-        const SizedBox(height: 15),
+        SizedBox(height: isWide ? 8 : 15),
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
@@ -687,7 +716,7 @@ class _RegisterContent extends StatelessWidget {
           controller: phoneController,
           onCountryChanged: onChangedCountry,
         ),
-        const SizedBox(height: 15),
+        SizedBox(height: isWide ? 8 : 15),
         Row(
           children: [
             Checkbox(
@@ -730,7 +759,7 @@ class _RegisterContent extends StatelessWidget {
               style: const TextStyle(color: Colors.red),
             ),
           ),
-        const SizedBox(height: 32),
+        SizedBox(height: isWide ? 12 : 32),
         SizedBox(
           width: double.infinity,
           height: 56,
@@ -978,6 +1007,13 @@ class _DateOfBirthRowState extends State<_DateOfBirthRow> {
   String? selectedDay;
   String? selectedYear;
 
+  int _daysInMonth(String? month) {
+    if (month == null) return 31;
+    final m = int.tryParse(month) ?? 0;
+    const days = [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    return (m >= 1 && m <= 12) ? days[m] : 31;
+  }
+
   void _notifyParent() {
     if (widget.onChanged != null) {
       widget.onChanged!(selectedMonth, selectedDay, selectedYear);
@@ -986,15 +1022,38 @@ class _DateOfBirthRowState extends State<_DateOfBirthRow> {
 
   @override
   Widget build(BuildContext context) {
+    final maxDays = _daysInMonth(selectedMonth);
     return Row(
       children: [
         Expanded(
+          flex: 5,
           child: _dropdownBox(
             label: "Month",
             value: selectedMonth,
             items: List.generate(12, (i) => (i + 1).toString().padLeft(2, '0')),
+            displayLabels: const [
+              'January',
+              'February',
+              'March',
+              'April',
+              'May',
+              'June',
+              'July',
+              'August',
+              'September',
+              'October',
+              'November',
+              'December',
+            ],
             onChanged: (val) {
-              setState(() => selectedMonth = val);
+              final newMax = _daysInMonth(val);
+              final currentDay = int.tryParse(selectedDay ?? '');
+              setState(() {
+                selectedMonth = val;
+                if (currentDay != null && currentDay > newMax) {
+                  selectedDay = null;
+                }
+              });
               _notifyParent();
             },
             isSelected: selectedMonth != null,
@@ -1002,10 +1061,14 @@ class _DateOfBirthRowState extends State<_DateOfBirthRow> {
         ),
         const SizedBox(width: 8),
         Expanded(
+          flex: 3,
           child: _dropdownBox(
             label: "Day",
             value: selectedDay,
-            items: List.generate(31, (i) => (i + 1).toString().padLeft(2, '0')),
+            items: List.generate(
+              maxDays,
+              (i) => (i + 1).toString().padLeft(2, '0'),
+            ),
             onChanged: (val) {
               setState(() => selectedDay = val);
               _notifyParent();
@@ -1015,6 +1078,7 @@ class _DateOfBirthRowState extends State<_DateOfBirthRow> {
         ),
         const SizedBox(width: 8),
         Expanded(
+          flex: 4,
           child: _dropdownBox(
             label: "Year",
             value: selectedYear,
@@ -1041,9 +1105,11 @@ Widget _dropdownBox({
   required List<String> items,
   required void Function(String?) onChanged,
   required bool isSelected,
+  List<String>? displayLabels,
 }) {
   return DropdownButtonFormField<String>(
     value: value,
+    isExpanded: true,
     decoration: InputDecoration(
       labelText: label,
       labelStyle: TextStyle(
@@ -1069,10 +1135,16 @@ Widget _dropdownBox({
     style: const TextStyle(color: Colors.white, fontSize: 15),
     iconEnabledColor: kgoldColor,
     items: items
+        .asMap()
+        .entries
         .map(
-          (item) => DropdownMenuItem<String>(
-            value: item,
-            child: Text(item, style: const TextStyle(color: Colors.white)),
+          (entry) => DropdownMenuItem<String>(
+            value: entry.value,
+            child: Text(
+              displayLabels != null ? displayLabels[entry.key] : entry.value,
+              style: const TextStyle(color: Colors.white),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         )
         .toList(),

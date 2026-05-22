@@ -12,22 +12,29 @@ class StarRequestSubmittedScreen extends StatelessWidget {
     : super(key: key);
   @override
   Widget build(BuildContext context) {
+    final isWide = MediaQuery.of(context).size.width > 900;
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100),
+        preferredSize: Size.fromHeight(isWide ? 100 : 80),
         child: AppBar(
-          backgroundColor: Colors.black.withOpacity(0.2),
+          backgroundColor: Colors.black.withValues(alpha: 0.2),
           elevation: 0,
           automaticallyImplyLeading: false,
           titleSpacing: 0,
           title: Padding(
-            padding: const EdgeInsets.only(left: 40, top: 10),
+            padding: EdgeInsets.only(
+              left: isWide ? 40 : 16,
+              top: isWide ? 10 : 8,
+            ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset('assets/appbar_logo.png', height: 60),
-                const SizedBox(width: 5),
+                Image.asset(
+                  'assets/appbar_logo.png',
+                  height: isWide ? 60 : 44,
+                ),
+                SizedBox(width: isWide ? 5 : 8),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -35,7 +42,7 @@ class StarRequestSubmittedScreen extends StatelessWidget {
                       'MY AUTOBIOGRAPHY',
                       style: GoogleFonts.bebasNeue(
                         color: const Color(0xffc18e3b),
-                        fontSize: 22,
+                        fontSize: isWide ? 22 : 18,
                         letterSpacing: 2,
                       ),
                     ),
@@ -43,7 +50,7 @@ class StarRequestSubmittedScreen extends StatelessWidget {
                       '"Live a Life & Leave a Legacy"',
                       style: GoogleFonts.poppins(
                         color: Colors.white70,
-                        fontSize: 12,
+                        fontSize: isWide ? 12 : 10,
                         fontStyle: FontStyle.italic,
                       ),
                     ),
@@ -57,7 +64,7 @@ class StarRequestSubmittedScreen extends StatelessWidget {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset('assets/bg_1411.png', fit: BoxFit.cover),
+            child: Image.asset('assets/bg_1411.jpg', fit: BoxFit.cover),
           ),
           SafeArea(
             child: LayoutBuilder(
@@ -69,306 +76,234 @@ class StarRequestSubmittedScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Left branding/logo
                       Expanded(
                         flex: 6,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Image.asset(
-                            'assets/5thscreen.PNG',
-                            height: 600,
+                            'assets/5thscreen.jpg',
                             fit: BoxFit.contain,
                             errorBuilder: (context, error, stackTrace) =>
                                 Container(),
                           ),
                         ),
                       ),
-                      // Right content
                       Expanded(
                         flex: 6,
-                        child: Center(
-                          child: SingleChildScrollView(
-                            child: Container(
+                        child: SingleChildScrollView(
+                          child: Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 500),
+                            child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 24.0,
                               ),
-                              alignment: Alignment.center,
-                              child: ConstrainedBox(
-                                constraints: const BoxConstraints(
-                                  maxWidth: 500,
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const SizedBox(height: 5),
-                                    Container(
-                                      padding: const EdgeInsets.all(3),
-                                      decoration: BoxDecoration(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(3),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: goldTextGradient,
+                                    ),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
-                                        gradient: goldTextGradient,
+                                        color: Colors.black,
                                       ),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(15),
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.black,
-                                        ),
-                                        child: ShaderMask(
-                                          shaderCallback: (bounds) =>
-                                              goldTextGradient.createShader(
-                                                bounds,
-                                              ),
-                                          child: Icon(
-                                            Icons.star,
-                                            color: Colors.white,
-                                            size: 54,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    // ShaderMask(
-                                    //   shaderCallback: (bounds) =>
-                                    //       goldTextGradient.createShader(bounds),
-                                    //   child: Text(
-                                    //     'Your Journey Has Begun.',
-                                    //     textAlign: TextAlign.center,
-                                    //     style: GoogleFonts.cinzel(
-                                    //       color: Colors.white,
-                                    //       fontSize: 22,
-                                    //       fontWeight: FontWeight.bold,
-                                    //       letterSpacing: 0,
-                                    //     ),
-                                    //   ),
-                                    // ),
-                                    const SizedBox(height: 10),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Expanded(
-                                          child: Container(
-                                            margin: const EdgeInsets.only(
-                                              right: 8,
+                                      child: ShaderMask(
+                                        shaderCallback: (bounds) =>
+                                            goldTextGradient.createShader(
+                                              bounds,
                                             ),
-                                            height: 1.5,
-                                            color: kgoldColor.withOpacity(0.5),
-                                          ),
-                                        ),
-                                        Text(
-                                          'Your Journey Has Begun!',
-                                          textAlign: TextAlign.center,
-                                          style: GoogleFonts.poppins(
-                                            color: kgoldColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400,
-                                            letterSpacing: 0,
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Container(
-                                            margin: const EdgeInsets.only(
-                                              left: 8,
-                                            ),
-                                            height: 1.5,
-                                            color: kgoldColor.withOpacity(0.5),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Text(
-                                      "Star request",
-                                      textAlign: TextAlign.center,
-                                      style: GoogleFonts.bebasNeue(
-                                        color: Colors.white,
-                                        fontSize: 50,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0,
-                                      ),
-                                    ),
-                                    // ShaderMask(
-                                    //   shaderCallback: (bounds) =>
-                                    //       goldTextGradient.createShader(bounds),
-                                    //   child: Text(
-                                    //     "Turn Your Life Into",
-                                    //     textAlign: TextAlign.center,
-                                    //     style: GoogleFonts.bebasNeue(
-                                    //       color: Colors.white,
-                                    //       fontSize: 50,
-                                    //       fontWeight: FontWeight.bold,
-                                    //       letterSpacing: 0,
-                                    //     ),
-                                    //   ),
-                                    // ),
-                                    ShaderMask(
-                                      shaderCallback: (bounds) =>
-                                          goldTextGradient.createShader(bounds),
-                                      child: Text(
-                                        "submitted.",
-                                        textAlign: TextAlign.center,
-                                        style: GoogleFonts.bebasNeue(
+                                        child: const Icon(
+                                          Icons.star,
                                           color: Colors.white,
-                                          fontSize: 50,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 0,
+                                          size: 44,
                                         ),
                                       ),
                                     ),
-                                    Text(
-                                      'Your request to become a star has been successfully submitted.',
-                                      textAlign: TextAlign.center,
-                                      style: GoogleFonts.poppins(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400,
-                                        letterSpacing: 0,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          margin: const EdgeInsets.only(
+                                            right: 8,
+                                          ),
+                                          height: 1.5,
+                                          color: kgoldColor.withOpacity(0.5),
+                                        ),
                                       ),
-                                    ),
-
-                                    const SizedBox(height: 8),
-                                    Container(
-                                      height: 1.5,
-                                      width: 60,
-                                      color: kgoldColor.withOpacity(0.5),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      'Our team is reviewing your profile.',
-                                      textAlign: TextAlign.center,
-                                      style: GoogleFonts.poppins(
-                                        color: Colors.white,
-                                        fontSize: 14,
+                                      Text(
+                                        'Your Journey Has Begun!',
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.poppins(
+                                          color: kgoldColor,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                        ),
                                       ),
+                                      Expanded(
+                                        child: Container(
+                                          margin: const EdgeInsets.only(
+                                            left: 8,
+                                          ),
+                                          height: 1.5,
+                                          color: kgoldColor.withOpacity(0.5),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    "Star request",
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.bebasNeue(
+                                      color: Colors.white,
+                                      fontSize: 42,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0,
                                     ),
-                                    const SizedBox(height: 10),
-                                    // Chevron gold-bordered box with styled text
-                                    _InspireChevronBox(),
-
-                                    const SizedBox(height: 5),
-                                    // Text(
-                                    //   'If selected, your story could be experienced by audiences across the world.',
-                                    //   textAlign: TextAlign.center,
-                                    //   style: GoogleFonts.poppins(
-                                    //     color: Colors.white,
-                                    //     fontSize: 14,
-                                    //   ),
-                                    // ),
-                                    const SizedBox(height: 5),
-                                    Text(
-                                      'You\'ll hear from us soon.',
+                                  ),
+                                  ShaderMask(
+                                    shaderCallback: (bounds) =>
+                                        goldTextGradient.createShader(bounds),
+                                    child: Text(
+                                      "submitted.",
                                       textAlign: TextAlign.center,
                                       style: GoogleFonts.bebasNeue(
                                         color: Colors.white,
-                                        fontSize: 36,
+                                        fontSize: 42,
                                         fontWeight: FontWeight.bold,
                                         letterSpacing: 0,
                                       ),
                                     ),
-                                    Text(
-                                      'We ‘ll  notify you once our review is complete.',
-                                      textAlign: TextAlign.center,
-                                      style: GoogleFonts.poppins(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                      ),
+                                  ),
+                                  Text(
+                                    'Your request to become a star has been successfully submitted.',
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
                                     ),
-                                    // ShaderMask(
-                                    //   shaderCallback: (bounds) =>
-                                    //       goldTextGradient.createShader(bounds),
-                                    //   child: Text(
-                                    //     'You\'ll hear from us soon.',
-                                    //     textAlign: TextAlign.center,
-                                    //     style: GoogleFonts.bebasNeue(
-                                    //       color: Colors.white,
-                                    //       fontSize: 20,
-                                    //       fontWeight: FontWeight.bold,
-                                    //       letterSpacing: 0,
-                                    //     ),
-                                    //   ),
-                                    // ),
-                                    const SizedBox(height: 25),
-                                    SizedBox(
-                                      width: double.infinity,
-                                      height: 52,
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Container(
+                                    height: 1.5,
+                                    width: 60,
+                                    color: kgoldColor.withOpacity(0.5),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    'Our team is reviewing your profile.',
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  _InspireChevronBox(),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'You\'ll hear from us soon.',
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.bebasNeue(
+                                      color: Colors.white,
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    'We\'ll notify you once our review is complete.',
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 48,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        gradient: goldTextGradient,
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      padding: const EdgeInsets.all(2),
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          gradient: goldTextGradient,
-                                          borderRadius: BorderRadius.circular(
-                                            16,
-                                          ),
+                                          color: Colors.black,
+                                          borderRadius:
+                                              BorderRadius.circular(14),
                                         ),
-                                        padding: const EdgeInsets.all(2),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.black,
-                                            borderRadius: BorderRadius.circular(
-                                              14,
+                                        child: OutlinedButton(
+                                          onPressed: onExplore ??
+                                              () {
+                                                Navigator.of(
+                                                  context,
+                                                ).popUntil(
+                                                  (route) => route.isFirst,
+                                                );
+                                              },
+                                          style: OutlinedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(14),
                                             ),
+                                            side: BorderSide.none,
+                                            backgroundColor: Colors.transparent,
+                                            padding: EdgeInsets.zero,
+                                            foregroundColor: Colors.white,
+                                            shadowColor: Colors.transparent,
                                           ),
-                                          child: OutlinedButton(
-                                            onPressed:
-                                                onExplore ??
-                                                () {
-                                                  Navigator.of(
-                                                    context,
-                                                  ).popUntil(
-                                                    (route) => route.isFirst,
-                                                  );
-                                                },
-                                            style: OutlinedButton.styleFrom(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(14),
-                                              ),
-                                              side: BorderSide.none,
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              padding: EdgeInsets.zero,
-                                              foregroundColor: Colors.white,
-                                              shadowColor: Colors.transparent,
-                                            ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                ShaderMask(
-                                                  shaderCallback: (bounds) =>
-                                                      goldTextGradient
-                                                          .createShader(bounds),
-                                                  child: Text(
-                                                    'Thank You',
-                                                    style: GoogleFonts.poppins(
-                                                      color: Colors.white,
-                                                      fontSize: 17,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 8),
-                                                ShaderMask(
-                                                  shaderCallback: (bounds) =>
-                                                      goldTextGradient
-                                                          .createShader(bounds),
-                                                  child: Icon(
-                                                    Icons.arrow_forward_ios,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              ShaderMask(
+                                                shaderCallback: (bounds) =>
+                                                    goldTextGradient
+                                                        .createShader(bounds),
+                                                child: Text(
+                                                  'Thank You',
+                                                  style: GoogleFonts.poppins(
                                                     color: Colors.white,
-                                                    size: 18,
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
-                                              ],
-                                            ),
+                                              ),
+                                              const SizedBox(width: 8),
+                                              ShaderMask(
+                                                shaderCallback: (bounds) =>
+                                                    goldTextGradient
+                                                        .createShader(bounds),
+                                                child: const Icon(
+                                                  Icons.arrow_forward_ios,
+                                                  color: Colors.white,
+                                                  size: 18,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(height: 24),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
+                          ),
                           ),
                         ),
                       ),

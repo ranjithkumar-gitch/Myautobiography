@@ -1,11 +1,11 @@
 {
-    "name": "myautobiography",
-    "short_name": "myautobiography",
+    "name": "My Autobiography",
+    "short_name": "My Autobiography",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "“My Autobiography” is the world’s first digital legacy archive designed to share & preserve your life stories, memories & experiences across generations.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

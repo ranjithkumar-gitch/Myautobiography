@@ -1,5 +1,5 @@
 class AppConstant {
-  static String mcbBaseURL = 'https://mcb-dev.clearfocus.in/api/';
+  static String mcbBaseURL = 'https://dev-mab.clearfocus.in/api/';
 }
 
 // class ApiConstants {

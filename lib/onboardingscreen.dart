@@ -9,11 +9,32 @@ import 'package:myautobiography/theme_notifier.dart';
 
 // import 'package:flutter_svg/flutter_svg.dart';
 
-class OnBoardingscreen extends StatelessWidget {
+class OnBoardingscreen extends StatefulWidget {
   const OnBoardingscreen({Key? key}) : super(key: key);
+
+  @override
+  State<OnBoardingscreen> createState() => _OnBoardingscreenState();
+}
+
+class _OnBoardingscreenState extends State<OnBoardingscreen> {
+  bool _imagesCached = false;
 
   Widget _buildLandingPage(Widget child) {
     return _LandingPageBackGuard(child: PopScope(canPop: false, child: child));
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_imagesCached) {
+      _imagesCached = true;
+      precacheImage(const AssetImage('assets/bg_1411.jpg'), context).ignore();
+      precacheImage(const AssetImage('assets/image1.png'), context).ignore();
+      precacheImage(
+        const AssetImage('assets/logo_4kquality.png'),
+        context,
+      ).ignore();
+    }
   }
 
   @override
@@ -71,261 +92,247 @@ class OnBoardingscreen extends StatelessWidget {
           body: Stack(
             children: [
               Positioned.fill(
-                child: Image.asset('assets/bg_1411.png', fit: BoxFit.cover),
+                child: Image.asset('assets/bg_1411.jpg', fit: BoxFit.cover),
               ),
               SafeArea(
-                child: SingleChildScrollView(
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32.0,
-                        vertical: 24.0,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        flex: 6,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.asset(
+                            'assets/image1.png',
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Container(),
+                          ),
+                        ),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            flex: 6,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Center(
-                                child: Image.asset(
-                                  'assets/image1.png',
-                                  height: 600,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      Container(),
+                      Expanded(
+                        flex: 6,
+                        child: SingleChildScrollView(
+                          child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'A NEW ERA OF',
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 2,
                                 ),
                               ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 6,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 32.0,
+                              ShaderMask(
+                                shaderCallback: (bounds) =>
+                                    goldTextGradient.createShader(bounds),
+                                child: Text(
+                                  'HUMAN STORIES',
+                                  style: GoogleFonts.bebasNeue(
+                                    color: Colors.white,
+                                    fontSize: 60,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 0,
+                                  ),
+                                ),
                               ),
-                              child: Column(
+                              Text(
+                                'IS ABOUT TO BEGIN',
+                                style: GoogleFonts.bebasNeue(
+                                  color: Colors.white,
+                                  fontSize: 60,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0,
+                                ),
+                              ),
+                              Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    'A NEW ERA OF',
-                                    style: GoogleFonts.poppins(
-                                      color: Colors.white,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.w400,
-                                      letterSpacing: 2,
+                                  Flexible(
+                                    flex: 2,
+                                    child: FractionallySizedBox(
+                                      widthFactor: 0.5,
+                                      child: Divider(
+                                        color: kwhiteColor,
+                                        thickness: 1,
+                                      ),
                                     ),
                                   ),
-                                  ShaderMask(
-                                    shaderCallback: (bounds) =>
-                                        goldTextGradient.createShader(bounds),
-                                    child: Text(
-                                      'HUMAN STORIES',
-                                      style: GoogleFonts.bebasNeue(
+                                  const Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 8.0,
+                                    ),
+                                    child: Icon(
+                                      Icons.star,
+                                      color: kgoldColor,
+                                      size: 28,
+                                    ),
+                                  ),
+                                  Flexible(
+                                    flex: 2,
+                                    child: FractionallySizedBox(
+                                      widthFactor: 0.5,
+                                      child: Divider(
+                                        color: kwhiteColor,
+                                        thickness: 1,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                "Join early. Be part of what's coming next.",
+                                style: GoogleFonts.poppins(
+                                  color: const Color(0xffc18e3b),
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                  horizontal: 20,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: Colors.white.withOpacity(0.25),
+                                  ),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'EARLY ACCESS IS LIMITED.',
+                                      style: GoogleFonts.poppins(
                                         color: Colors.white,
-                                        fontSize: 80,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 15,
                                       ),
                                     ),
-                                  ),
-                                  Text(
-                                    'IS ABOUT TO BEGIN',
-                                    style: GoogleFonts.bebasNeue(
-                                      color: Colors.white,
-                                      fontSize: 80,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 0,
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Flexible(
-                                        flex: 2,
-                                        child: FractionallySizedBox(
-                                          widthFactor: 0.5,
-                                          child: Divider(
-                                            color: kwhiteColor,
-                                            thickness: 1,
-                                          ),
+                                    ShaderMask(
+                                      shaderCallback: (bounds) =>
+                                          goldTextGradient.createShader(bounds),
+                                      child: Text(
+                                        'THOUSANDS ARE ALREADY JOINING.',
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
                                         ),
                                       ),
-                                      const Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 8.0,
-                                        ),
-                                        child: Icon(
-                                          Icons.star,
-                                          color: kgoldColor,
-                                          size: 32,
-                                        ),
-                                      ),
-                                      Flexible(
-                                        flex: 2,
-                                        child: FractionallySizedBox(
-                                          widthFactor: 0.5,
-                                          child: Divider(
-                                            color: kwhiteColor,
-                                            thickness: 1,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    "Join early. Be part of what's coming next.",
-                                    style: GoogleFonts.poppins(
-                                      color: const Color(0xffc18e3b),
-                                      fontSize: 18,
                                     ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              SizedBox(
+                                width: 320,
+                                height: 52,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    gradient: goldTextGradient,
+                                    borderRadius: BorderRadius.circular(16),
                                   ),
-                                  const SizedBox(height: 15),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 16,
-                                      horizontal: 20,
-                                    ),
+                                  padding: const EdgeInsets.all(2),
+                                  child: Container(
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16),
-                                      border: Border.all(
-                                        color: Colors.white.withOpacity(0.25),
-                                      ),
+                                      color: Colors.black,
+                                      borderRadius: BorderRadius.circular(14),
                                     ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          'EARLY ACCESS IS LIMITED.',
-                                          style: GoogleFonts.poppins(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16,
+                                    child: OutlinedButton(
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                RegisterScreen(),
                                           ),
-                                        ),
-                                        ShaderMask(
-                                          shaderCallback: (bounds) =>
-                                              goldTextGradient.createShader(
-                                                bounds,
-                                              ),
-                                          child: Text(
-                                            'THOUSANDS ARE ALREADY JOINING.',
-                                            style: GoogleFonts.poppins(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 24),
-                                  SizedBox(
-                                    width: 320,
-                                    height: 56,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        gradient: goldTextGradient,
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      padding: const EdgeInsets.all(2),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.black,
+                                        );
+                                      },
+                                      style: OutlinedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
                                             14,
                                           ),
                                         ),
-                                        child: OutlinedButton(
-                                          onPressed: () {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    RegisterScreen(),
+                                        side: BorderSide.none,
+                                        backgroundColor: Colors.transparent,
+                                        padding: EdgeInsets.zero,
+                                        foregroundColor: Colors.white,
+                                        shadowColor: Colors.transparent,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          ShaderMask(
+                                            shaderCallback: (bounds) =>
+                                                goldTextGradient.createShader(
+                                                  bounds,
+                                                ),
+                                            child: Text(
+                                              'SECURE MY SPOT',
+                                              style: GoogleFonts.poppins(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20,
+                                                letterSpacing: 1.2,
                                               ),
-                                            );
-                                          },
-                                          style: OutlinedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(14),
                                             ),
-                                            side: BorderSide.none,
-                                            backgroundColor: Colors.transparent,
-                                            padding: EdgeInsets.zero,
-                                            foregroundColor: Colors.white,
-                                            shadowColor: Colors.transparent,
                                           ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              ShaderMask(
-                                                shaderCallback: (bounds) =>
-                                                    goldTextGradient
-                                                        .createShader(bounds),
-                                                child: Text(
-                                                  'SECURE MY SPOT',
-                                                  style: GoogleFonts.poppins(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 22,
-                                                    letterSpacing: 1.2,
-                                                  ),
+                                          const SizedBox(width: 20),
+                                          ShaderMask(
+                                            shaderCallback: (bounds) =>
+                                                goldTextGradient.createShader(
+                                                  bounds,
                                                 ),
-                                              ),
-                                              const SizedBox(width: 20),
-                                              ShaderMask(
-                                                shaderCallback: (bounds) =>
-                                                    goldTextGradient
-                                                        .createShader(bounds),
-                                                child: Icon(
-                                                  Icons.chevron_right,
-                                                  size: 32,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ],
+                                            child: Icon(
+                                              Icons.chevron_right,
+                                              size: 28,
+                                              color: Colors.white,
+                                            ),
                                           ),
-                                        ),
+                                        ],
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 40),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.shield_outlined,
-                                        color: Color(0xffc18e3b),
-                                        size: 18,
-                                      ),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        'NO SPAM. PRIORITY ACCESS WHEN WE LAUNCH.',
-                                        style: GoogleFonts.poppins(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ],
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.shield_outlined,
+                                    color: Color(0xffc18e3b),
+                                    size: 16,
                                   ),
-                                  const SizedBox(height: 24),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    'NO SPAM. PRIORITY ACCESS WHEN WE LAUNCH.',
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                    ),
+                                  ),
                                 ],
                               ),
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ),
@@ -338,10 +345,52 @@ class OnBoardingscreen extends StatelessWidget {
     // Default: mobile/tablet UI
     return _buildLandingPage(
       Scaffold(
+        backgroundColor: Colors.black,
+        extendBodyBehindAppBar: true,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(80),
+          child: AppBar(
+            backgroundColor: Colors.black.withValues(alpha: 0.2),
+            elevation: 0,
+            automaticallyImplyLeading: false,
+            titleSpacing: 0,
+            title: Padding(
+              padding: const EdgeInsets.only(left: 16, top: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset('assets/appbar_logo.png', height: 44),
+                  const SizedBox(width: 8),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'MY AUTOBIOGRAPHY',
+                        style: GoogleFonts.bebasNeue(
+                          color: const Color(0xffc18e3b),
+                          fontSize: 18,
+                          letterSpacing: 2,
+                        ),
+                      ),
+                      Text(
+                        '"Live a Life & Leave a Legacy"',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white70,
+                          fontSize: 10,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
         body: Stack(
           children: [
             Positioned.fill(
-              child: Image.asset('assets/bg_1411.png', fit: BoxFit.cover),
+              child: Image.asset('assets/bg_1411.jpg', fit: BoxFit.cover),
             ),
             SafeArea(
               child: Center(
@@ -359,6 +408,7 @@ class OnBoardingscreen extends StatelessWidget {
                           child: Image.asset(
                             'assets/logo_4kquality.png',
                             fit: BoxFit.contain,
+                            cacheWidth: 365,
                           ),
                         ),
                         const SizedBox(height: 10),
