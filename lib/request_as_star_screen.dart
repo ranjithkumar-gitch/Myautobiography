@@ -1,14 +1,11 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myautobiography/app_shared_preferences.dart';
 import 'package:myautobiography/constants/colors.dart';
-import 'package:myautobiography/full_screen_youtube_player.dart';
 import 'package:myautobiography/onboardingscreen.dart';
 import 'package:myautobiography/request_as_star_service.dart';
 import 'package:myautobiography/star_request_submitted_screen.dart';
 import 'package:myautobiography/theme_notifier.dart';
-import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class RequestAsStarScreen extends StatefulWidget {
   const RequestAsStarScreen({Key? key}) : super(key: key);
@@ -30,55 +27,6 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
   //     ),
   //   );
   // }
-
-  late YoutubePlayerController _youtubeController;
-  bool _isYoutubeReady = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _youtubeController = YoutubePlayerController(
-      params: const YoutubePlayerParams(
-        showControls: false,
-        showFullscreenButton: false,
-        mute: false,
-        enableCaption: true,
-        strictRelatedVideos: true,
-      ),
-    );
-
-    // Load the YouTube video
-    _youtubeController.cueVideoById(videoId: 'Riff0rzYCnQ');
-
-    // Listen for player updates
-    _youtubeController.listen((value) {
-      if (!mounted) return;
-
-      final ready = value.playerState != PlayerState.unknown;
-
-      if (_isYoutubeReady != ready) {
-        setState(() {
-          _isYoutubeReady = ready;
-        });
-      }
-    });
-
-    // Fallback: if web keeps showing loader, force UI after a short delay
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted && !_isYoutubeReady) {
-        setState(() {
-          _isYoutubeReady = true;
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _youtubeController.close();
-    super.dispose();
-  }
 
   bool showInfo = true;
 
@@ -147,12 +95,12 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
           child: AppBar(
             backgroundColor: Colors.black.withValues(alpha: 0.2),
             elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_rounded),
-              color: kgoldColor,
-              onPressed: _onBackPressed,
-              tooltip: 'Back',
-            ),
+            // leading: IconButton(
+            //   icon: const Icon(Icons.arrow_back_ios_new_rounded),
+            //   color: kgoldColor,
+            //   onPressed: _onBackPressed,
+            //   tooltip: 'Back',
+            // ),
             automaticallyImplyLeading: false,
             titleSpacing: 0,
             title: Padding(
@@ -160,37 +108,37 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
                 left: isWide ? 40 : 4,
                 top: isWide ? 10 : 8,
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'assets/appbar_logo.png',
-                    height: isWide ? 60 : 44,
-                  ),
-                  SizedBox(width: isWide ? 5 : 8),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'MY AUTOBIOGRAPHY',
-                        style: GoogleFonts.bebasNeue(
-                          color: const Color(0xffc18e3b),
-                          fontSize: isWide ? 22 : 18,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                      Text(
-                        '"Live a Life & Leave a Legacy"',
-                        style: GoogleFonts.poppins(
-                          color: Colors.white70,
-                          fontSize: isWide ? 12 : 10,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              // child: Row(
+              //   crossAxisAlignment: CrossAxisAlignment.center,
+              //   children: [
+              //     Image.asset(
+              //       'assets/appbar_logo.png',
+              //       height: isWide ? 60 : 44,
+              //     ),
+              //     SizedBox(width: isWide ? 5 : 8),
+              //     Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //         Text(
+              //           'MY AUTOBIOGRAPHY',
+              //           style: GoogleFonts.bebasNeue(
+              //             color: const Color(0xffc18e3b),
+              //             fontSize: isWide ? 22 : 18,
+              //             letterSpacing: 2,
+              //           ),
+              //         ),
+              //         Text(
+              //           '"Live a Life & Leave a Legacy"',
+              //           style: GoogleFonts.poppins(
+              //             color: Colors.white70,
+              //             fontSize: isWide ? 12 : 10,
+              //             fontStyle: FontStyle.italic,
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //   ],
+              // ),
             ),
           ),
         ),
@@ -267,26 +215,76 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
                         Expanded(
                           flex: 6,
                           child: SingleChildScrollView(
-                            child: Center(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 32.0,
+                            child: ConstrainedBox(
+                              // Fill the full height so content sits centered on screen.
+                              constraints: BoxConstraints(
+                                minHeight: constraints.maxHeight,
                               ),
-                              constraints: const BoxConstraints(maxWidth: 500),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Row(
+                              child: Center(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 32.0,
+                                    vertical: 24.0,
+                                  ),
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 680,
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Expanded(
-                                        child: Container(
-                                          margin: const EdgeInsets.only(
-                                            right: 8,
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                              margin: const EdgeInsets.only(
+                                                right: 8,
+                                              ),
+                                              height: 1.5,
+                                              color: kgoldColor.withOpacity(
+                                                0.5,
+                                              ),
+                                            ),
                                           ),
-                                          height: 1.5,
-                                          color: kgoldColor.withOpacity(0.5),
+                                          ShaderMask(
+                                            shaderCallback: (bounds) =>
+                                                goldTextGradient.createShader(
+                                                  bounds,
+                                                ),
+                                            child: Text(
+                                              'What It Means to Be a Star',
+                                              textAlign: TextAlign.center,
+                                              style: GoogleFonts.poppins(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                letterSpacing: 0,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Container(
+                                              margin: const EdgeInsets.only(
+                                                left: 8,
+                                              ),
+                                              height: 1.5,
+                                              color: kgoldColor.withOpacity(
+                                                0.5,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Text(
+                                        "Turn Your Life Into",
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.bebasNeue(
+                                          color: Colors.white,
+                                          fontSize: 48,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0,
                                         ),
                                       ),
                                       ShaderMask(
@@ -295,278 +293,163 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
                                               bounds,
                                             ),
                                         child: Text(
-                                          'What It Means to Be a Star',
+                                          "a Living Legacy.",
                                           textAlign: TextAlign.center,
-                                          style: GoogleFonts.poppins(
+                                          style: GoogleFonts.bebasNeue(
                                             color: Colors.white,
-                                            fontSize: 14,
+                                            fontSize: 48,
                                             fontWeight: FontWeight.bold,
                                             letterSpacing: 0,
                                           ),
                                         ),
                                       ),
-                                      Expanded(
-                                        child: Container(
-                                          margin: const EdgeInsets.only(
-                                            left: 8,
-                                          ),
-                                          height: 1.5,
-                                          color: kgoldColor.withOpacity(0.5),
+                                      Text(
+                                        "Be remembered. Be experienced. Be timeless. Create your digital Legacy and share your story with the world.",
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w400,
+                                          letterSpacing: 0,
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                  Text(
-                                    "Turn Your Life Into",
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.bebasNeue(
-                                      color: Colors.white,
-                                      fontSize: 36,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 0,
-                                    ),
-                                  ),
-                                  ShaderMask(
-                                    shaderCallback: (bounds) =>
-                                        goldTextGradient.createShader(bounds),
-                                    child: Text(
-                                      "a Living Legacy.",
-                                      textAlign: TextAlign.center,
-                                      style: GoogleFonts.bebasNeue(
-                                        color: Colors.white,
-                                        fontSize: 36,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0,
-                                      ),
-                                    ),
-                                  ),
-                                  Text(
-                                    "Be remembered. Be experienced. Be timeless. Create your digital Legacy and share your story with the world.",
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.poppins(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      letterSpacing: 0,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  AspectRatio(
-                                    aspectRatio: 16 / 9,
-                                    child: Container(
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: kgoldColor,
-                                          width: 1,
-                                        ),
-                                        borderRadius: BorderRadius.circular(0),
-                                      ),
-                                      clipBehavior: Clip.antiAlias,
-                                      child: Stack(
-                                        fit: StackFit.loose,
+                                      const SizedBox(height: 10),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
-                                          _isYoutubeReady
-                                              ? AbsorbPointer(
-                                                  absorbing: kIsWeb,
-                                                  child: YoutubePlayer(
-                                                    controller:
-                                                        _youtubeController,
-                                                    aspectRatio: 16 / 9,
-                                                  ),
-                                                )
-                                              : Container(
-                                                  color: Colors.black12,
-                                                  child: const Center(
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                          color: kgoldColor,
-                                                        ),
-                                                  ),
-                                                ),
-                                          if (_isYoutubeReady)
-                                            Positioned(
-                                              left: 0,
-                                              right: 0,
-                                              bottom: 0,
-                                              child: Container(
-                                                color: Colors.black
-                                                    .withOpacity(0.85),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 8,
-                                                      vertical: 4,
-                                                    ),
-                                                child: const Row(
-                                                  children: [Spacer()],
-                                                ),
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  GestureDetector(
-                                    onTap: () async {
-                                      await _youtubeController.pauseVideo();
-                                      final videoId =
-                                          YoutubePlayerController.convertUrlToId(
-                                            'https://www.youtube.com/watch?v=Riff0rzYCnQ',
-                                          ) ??
-                                          'Riff0rzYCnQ';
-                                      WidgetsBinding.instance
-                                          .addPostFrameCallback((_) {
-                                            Navigator.of(
-                                              context,
-                                              rootNavigator: true,
-                                            ).push(
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    FullScreenYoutubePlayer(
-                                                      videoId: videoId,
-                                                    ),
-                                              ),
-                                            );
-                                          });
-                                    },
-                                    child: Text(
-                                      'Click Here for Full Screen View',
-                                      textAlign: TextAlign.center,
-                                      style: GoogleFonts.poppins(
-                                        color: kgoldColor,
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '1. Global Audience',
-                                            style: GoogleFonts.poppins(
-                                              color: Colors.white,
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                          Text(
-                                            '3. Preserve Your Knowledge',
-                                            style: GoogleFonts.poppins(
-                                              color: Colors.white,
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '2. Share Your Voice',
-                                            style: GoogleFonts.poppins(
-                                              color: Colors.white,
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                          Text(
-                                            '4. AI-Powered Legacy',
-                                            style: GoogleFonts.poppins(
-                                              color: Colors.white,
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 12),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 52,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        gradient: goldTextGradient,
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      padding: const EdgeInsets.all(2),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.black,
-                                          borderRadius:
-                                              BorderRadius.circular(14),
-                                        ),
-                                        child: OutlinedButton(
-                                          onPressed: _onRequest,
-                                          style: OutlinedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(14),
-                                            ),
-                                            side: BorderSide.none,
-                                            backgroundColor: Colors.transparent,
-                                            padding: EdgeInsets.zero,
-                                            foregroundColor: Colors.white,
-                                            shadowColor: Colors.transparent,
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              ShaderMask(
-                                                shaderCallback: (bounds) =>
-                                                    goldTextGradient
-                                                        .createShader(bounds),
-                                                child: Text(
-                                                  'Apply to be a star',
-                                                  style: GoogleFonts.poppins(
-                                                    color: Colors.white,
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
+                                              Text(
+                                                '1. Global Audience',
+                                                style: GoogleFonts.poppins(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w400,
                                                 ),
                                               ),
-                                              const SizedBox(width: 8),
-                                              ShaderMask(
-                                                shaderCallback: (bounds) =>
-                                                    goldTextGradient
-                                                        .createShader(bounds),
-                                                child: const Icon(
-                                                  Icons.arrow_forward_ios,
+                                              Text(
+                                                '3. Preserve Your Knowledge',
+                                                style: GoogleFonts.poppins(
                                                   color: Colors.white,
-                                                  size: 20,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w400,
                                                 ),
                                               ),
                                             ],
                                           ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '2. Share Your Voice',
+                                                style: GoogleFonts.poppins(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                              Text(
+                                                '4. AI-Powered Legacy',
+                                                style: GoogleFonts.poppins(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 40),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        height: 52,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            gradient: goldTextGradient,
+                                            borderRadius: BorderRadius.circular(
+                                              16,
+                                            ),
+                                          ),
+                                          padding: const EdgeInsets.all(2),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.black,
+                                              borderRadius:
+                                                  BorderRadius.circular(14),
+                                            ),
+                                            child: OutlinedButton(
+                                              onPressed: _onRequest,
+                                              style: OutlinedButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(14),
+                                                ),
+                                                side: BorderSide.none,
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                padding: EdgeInsets.zero,
+                                                foregroundColor: Colors.white,
+                                                shadowColor: Colors.transparent,
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  ShaderMask(
+                                                    shaderCallback: (bounds) =>
+                                                        goldTextGradient
+                                                            .createShader(
+                                                              bounds,
+                                                            ),
+                                                    child: Text(
+                                                      'Apply to be a star',
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            color: Colors.white,
+                                                            fontSize: 20,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  ShaderMask(
+                                                    shaderCallback: (bounds) =>
+                                                        goldTextGradient
+                                                            .createShader(
+                                                              bounds,
+                                                            ),
+                                                    child: const Icon(
+                                                      Icons.arrow_forward_ios,
+                                                      color: Colors.white,
+                                                      size: 20,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        'Applications are limited. Selection-based access.',
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.poppins(
+                                          color: kwhiteColor,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'Applications are limited. Selection-based access.',
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.poppins(
-                                      color: kwhiteColor,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
-                            ),
                             ),
                           ),
                         ),
@@ -605,130 +488,6 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
                                       fontSize: 22,
                                       fontWeight: FontWeight.bold,
                                       letterSpacing: 0,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-
-                                Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: kgoldColor,
-                                      width: 1,
-                                    ),
-                                    borderRadius: BorderRadius.circular(0),
-                                  ),
-                                  clipBehavior: Clip.antiAlias,
-                                  child: Stack(
-                                    children: [
-                                      // Fixed height for mobile/tablet
-                                      SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.width *
-                                            9 /
-                                            16,
-                                        width: double.infinity,
-                                        child: _isYoutubeReady
-                                            ? AbsorbPointer(
-                                                absorbing: kIsWeb,
-                                                child: YoutubePlayer(
-                                                  controller:
-                                                      _youtubeController,
-                                                  aspectRatio: 16 / 9,
-                                                ),
-                                              )
-                                            : Container(
-                                                color: Colors.black12,
-                                                child: const Center(
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                        color: kgoldColor,
-                                                      ),
-                                                ),
-                                              ),
-                                      ),
-                                      // Fullscreen IconButton always on top
-                                      // if (_isYoutubeReady)
-                                      //   Positioned(
-                                      //     right: 12,
-                                      //     bottom: 12,
-                                      //     child: Material(
-                                      //       color: Colors.transparent,
-                                      //       child: IconButton(
-                                      //         padding: EdgeInsets.zero,
-                                      //         constraints:
-                                      //             const BoxConstraints(),
-                                      //         icon: const Icon(
-                                      //           Icons.fullscreen,
-                                      //           color: kgoldColor,
-                                      //           size: 32,
-                                      //         ),
-                                      //         onPressed: () async {
-                                      //           await _youtubeController
-                                      //               .pauseVideo();
-                                      //           final videoId =
-                                      //               YoutubePlayerController.convertUrlToId(
-                                      //                 'https://www.youtube.com/watch?v=Riff0rzYCnQ',
-                                      //               ) ??
-                                      //               'Riff0rzYCnQ';
-                                      //           WidgetsBinding.instance
-                                      //               .addPostFrameCallback((_) {
-                                      //                 Navigator.of(
-                                      //                   context,
-                                      //                   rootNavigator: true,
-                                      //                 ).push(
-                                      //                   MaterialPageRoute(
-                                      //                     builder: (context) =>
-                                      //                         FullScreenYoutubePlayer(
-                                      //                           videoId:
-                                      //                               videoId,
-                                      //                         ),
-                                      //                   ),
-                                      //                 );
-                                      //               });
-                                      //         },
-                                      //       ),
-                                      //     ),
-                                      //   ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: 15),
-                                GestureDetector(
-                                  onTap: () async {
-                                    await _youtubeController.pauseVideo();
-                                    final videoId =
-                                        YoutubePlayerController.convertUrlToId(
-                                          'https://www.youtube.com/watch?v=Riff0rzYCnQ',
-                                        ) ??
-                                        'Riff0rzYCnQ';
-                                    // Use SchedulerBinding to ensure navigation works in all layouts
-                                    WidgetsBinding.instance
-                                        .addPostFrameCallback((_) {
-                                          Navigator.of(
-                                            context,
-                                            rootNavigator: true,
-                                          ).push(
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  FullScreenYoutubePlayer(
-                                                    videoId: videoId,
-                                                  ),
-                                            ),
-                                          );
-                                        });
-                                  },
-
-                                  child: Text(
-                                    'Click Here for Full Screen View',
-
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.poppins(
-                                      color: kgoldColor,
-
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400,
                                     ),
                                   ),
                                 ),
@@ -882,5 +641,4 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
       ),
     );
   }
-
 }

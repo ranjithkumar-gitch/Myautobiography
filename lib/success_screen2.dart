@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myautobiography/constants/colors.dart';
 import 'package:myautobiography/onboardingscreen.dart';
@@ -35,34 +36,34 @@ class SuccessScreen2 extends StatelessWidget {
               left: isWide ? 40 : 16,
               top: isWide ? 10 : 8,
             ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset('assets/appbar_logo.png', height: isWide ? 60 : 44),
-                SizedBox(width: isWide ? 5 : 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'MY AUTOBIOGRAPHY',
-                      style: GoogleFonts.bebasNeue(
-                        color: const Color(0xffc18e3b),
-                        fontSize: isWide ? 22 : 18,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                    Text(
-                      '"Live a Life & Leave a Legacy"',
-                      style: GoogleFonts.poppins(
-                        color: Colors.white70,
-                        fontSize: isWide ? 12 : 10,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            // child: Row(
+            //   crossAxisAlignment: CrossAxisAlignment.center,
+            //   children: [
+            //     Image.asset('assets/appbar_logo.png', height: isWide ? 60 : 44),
+            //     SizedBox(width: isWide ? 5 : 8),
+            //     Column(
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       children: [
+            //         Text(
+            //           'MY AUTOBIOGRAPHY',
+            //           style: GoogleFonts.bebasNeue(
+            //             color: const Color(0xffc18e3b),
+            //             fontSize: isWide ? 22 : 18,
+            //             letterSpacing: 2,
+            //           ),
+            //         ),
+            //         Text(
+            //           '"Live a Life & Leave a Legacy"',
+            //           style: GoogleFonts.poppins(
+            //             color: Colors.white70,
+            //             fontSize: isWide ? 12 : 10,
+            //             fontStyle: FontStyle.italic,
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //   ],
+            // ),
           ),
         ),
       ),
@@ -135,228 +136,236 @@ class SuccessScreen2 extends StatelessWidget {
                         flex: 6,
                         child: SingleChildScrollView(
                           child: Center(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 32.0,
-                            ),
-                            constraints: const BoxConstraints(maxWidth: 500),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-                                        margin: const EdgeInsets.only(right: 8),
-                                        height: 1.5,
-                                        color: kgoldColor.withOpacity(0.5),
-                                      ),
-                                    ),
-                                    Text(
-                                      'YOU ARE IN.',
-                                      style: GoogleFonts.poppins(
-                                        color: kgoldColor,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        margin: const EdgeInsets.only(left: 8),
-                                        height: 1.5,
-                                        color: kgoldColor.withOpacity(0.5),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                ShaderMask(
-                                  shaderCallback: (bounds) =>
-                                      goldTextGradient.createShader(bounds),
-                                  child: Text(
-                                    "welcome to early access",
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.bebasNeue(
-                                      color: Colors.white,
-                                      fontSize: 42,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 0,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  welcomeName.isNotEmpty
-                                      ? "$welcomeName, You are now part of the early access community of"
-                                      : "Welcome the world's first living legacy platform",
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.poppins(
-                                    color: kwhiteColor,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                const SizedBox(height: 2),
-                                ShaderMask(
-                                  shaderCallback: (bounds) =>
-                                      goldTextGradient.createShader(bounds),
-                                  child: Text(
-                                    'MyAutobiography',
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.poppins(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 0,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Container(
-                                  margin: const EdgeInsets.symmetric(
-                                    vertical: 6,
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 10,
-                                    horizontal: 18,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: kgoldColor,
-                                      width: 1.5,
-                                    ),
-                                    borderRadius: BorderRadius.circular(6),
-                                    color: Colors.transparent,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 32.0,
+                              ),
+                              constraints: const BoxConstraints(maxWidth: 500),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
                                     children: [
-                                      Text(
-                                        'YOU ARE NOW A',
-                                        textAlign: TextAlign.center,
-                                        style: GoogleFonts.poppins(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w600,
-                                          letterSpacing: 2,
+                                      Expanded(
+                                        child: Container(
+                                          margin: const EdgeInsets.only(
+                                            right: 8,
+                                          ),
+                                          height: 1.5,
+                                          color: kgoldColor.withOpacity(0.5),
                                         ),
                                       ),
-                                      const SizedBox(height: 4),
-                                      ShaderMask(
-                                        shaderCallback: (bounds) =>
-                                            goldTextGradient.createShader(
-                                              bounds,
-                                            ),
-                                        child: Text(
-                                          'STARGAZER',
-                                          textAlign: TextAlign.center,
-                                          style: GoogleFonts.bebasNeue(
-                                            color: Colors.white,
-                                            fontSize: 40,
-                                            fontWeight: FontWeight.bold,
-                                            letterSpacing: 2,
+                                      Text(
+                                        'YOU ARE IN.',
+                                        style: GoogleFonts.poppins(
+                                          color: kgoldColor,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          margin: const EdgeInsets.only(
+                                            left: 8,
                                           ),
+                                          height: 1.5,
+                                          color: kgoldColor.withOpacity(0.5),
                                         ),
                                       ),
                                     ],
                                   ),
-                                ),
-                                const SizedBox(height: 4),
-                                ShaderMask(
-                                  shaderCallback: (bounds) =>
-                                      goldTextGradient.createShader(bounds),
-                                  child: Text(
-                                    'HAVE A STORY THE WORLD SHOULD EXPERIENCE',
+                                  ShaderMask(
+                                    shaderCallback: (bounds) =>
+                                        goldTextGradient.createShader(bounds),
+                                    child: Text(
+                                      "welcome to early access",
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.bebasNeue(
+                                        color: Colors.white,
+                                        fontSize: 42,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    welcomeName.isNotEmpty
+                                        ? "$welcomeName, You are now part of the early access community of"
+                                        : "Welcome the world's first living legacy platform",
                                     textAlign: TextAlign.center,
                                     style: GoogleFonts.poppins(
                                       color: kwhiteColor,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 0,
+                                      fontSize: 16,
                                     ),
                                   ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Take the next step. Apply to become a Star and share your untold stories to the world.',
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.poppins(
-                                    color: kwhiteColor,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w400,
-                                    letterSpacing: 0,
-                                  ),
-                                ),
-                                _GoldStarDivider(),
-                                const SizedBox(height: 8),
-                                _InlineLegacyCountdown(),
-                                const SizedBox(height: 10),
-                                SizedBox(
-                                  width: double.infinity,
-                                  height: 46,
-                                  child: OutlinedButton(
-                                    onPressed: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const RequestAsStarScreen(),
-                                        ),
-                                      );
-                                    },
-                                    style: OutlinedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16),
+                                  const SizedBox(height: 2),
+                                  ShaderMask(
+                                    shaderCallback: (bounds) =>
+                                        goldTextGradient.createShader(bounds),
+                                    child: Text(
+                                      'MyAutobiography',
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 0,
                                       ),
-                                      side: const BorderSide(
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(
+                                      vertical: 6,
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 10,
+                                      horizontal: 18,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
                                         color: kgoldColor,
-                                        width: 2,
+                                        width: 1.5,
                                       ),
-                                      padding: EdgeInsets.zero,
-                                      foregroundColor: kgoldColor,
+                                      borderRadius: BorderRadius.circular(6),
+                                      color: Colors.transparent,
                                     ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
+                                        Text(
+                                          'YOU ARE NOW A',
+                                          textAlign: TextAlign.center,
+                                          style: GoogleFonts.poppins(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                            letterSpacing: 2,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
                                         ShaderMask(
                                           shaderCallback: (bounds) =>
                                               goldTextGradient.createShader(
                                                 bounds,
                                               ),
                                           child: Text(
-                                            'Request to be a star',
+                                            'STARGAZER',
                                             textAlign: TextAlign.center,
-                                            style: GoogleFonts.poppins(
+                                            style: GoogleFonts.bebasNeue(
                                               color: Colors.white,
-                                              fontSize: 18,
+                                              fontSize: 40,
                                               fontWeight: FontWeight.bold,
-                                              letterSpacing: 0,
+                                              letterSpacing: 2,
                                             ),
                                           ),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Icon(
-                                          Icons.chevron_right,
-                                          color: kgoldColor,
-                                          size: 24,
                                         ),
                                       ],
                                     ),
                                   ),
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  'Applications are limited. Selection-based access.',
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.poppins(
-                                    color: kwhiteColor,
-                                    fontSize: 12,
+                                  const SizedBox(height: 4),
+                                  ShaderMask(
+                                    shaderCallback: (bounds) =>
+                                        goldTextGradient.createShader(bounds),
+                                    child: Text(
+                                      'HAVE A STORY THE WORLD SHOULD EXPERIENCE',
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.poppins(
+                                        color: kwhiteColor,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Take the next step. Apply to become a Star and share your untold stories to the world.',
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.poppins(
+                                      color: kwhiteColor,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w400,
+                                      letterSpacing: 0,
+                                    ),
+                                  ),
+                                  _GoldStarDivider(),
+                                  const SizedBox(height: 8),
+                                  _InlineLegacyCountdown(),
+                                  const SizedBox(height: 10),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 46,
+                                    child: OutlinedButton(
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const RequestAsStarScreen(),
+                                          ),
+                                        );
+                                      },
+                                      style: OutlinedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            16,
+                                          ),
+                                        ),
+                                        side: const BorderSide(
+                                          color: kgoldColor,
+                                          width: 2,
+                                        ),
+                                        padding: EdgeInsets.zero,
+                                        foregroundColor: kgoldColor,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          ShaderMask(
+                                            shaderCallback: (bounds) =>
+                                                goldTextGradient.createShader(
+                                                  bounds,
+                                                ),
+                                            child: Text(
+                                              'Request to be a star',
+                                              textAlign: TextAlign.center,
+                                              style: GoogleFonts.poppins(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                letterSpacing: 0,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Icon(
+                                            Icons.chevron_right,
+                                            color: kgoldColor,
+                                            size: 24,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    'Applications are limited. Selection-based access.',
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.poppins(
+                                      color: kwhiteColor,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  const _BackToHomeButton(isWide: true),
+                                ],
+                              ),
                             ),
-                          ),
                           ),
                         ),
                       ),
@@ -501,6 +510,11 @@ class SuccessScreen2 extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                              const SizedBox(height: 8),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 32.0),
+                                child: _BackToHomeButton(isWide: false),
+                              ),
                               const SizedBox(height: 10),
                             ],
                           ),
@@ -512,6 +526,52 @@ class SuccessScreen2 extends StatelessWidget {
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+// Returns to the first page (onboarding) and clears the screens on top of it.
+class _BackToHomeButton extends StatelessWidget {
+  // Matches the "Request to be a star" button sizes for each layout.
+  final bool isWide;
+  const _BackToHomeButton({required this.isWide});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: isWide ? 46 : 50,
+      child: OutlinedButton(
+        onPressed: () => context.go('/'),
+        style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          side: const BorderSide(color: kgoldColor, width: 2),
+          padding: EdgeInsets.zero,
+          foregroundColor: kgoldColor,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.chevron_left, color: kgoldColor, size: isWide ? 24 : 22),
+            SizedBox(width: isWide ? 12 : 5),
+            ShaderMask(
+              shaderCallback: (bounds) => goldTextGradient.createShader(bounds),
+              child: Text(
+                'Back to Home',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontSize: isWide ? 18 : 16,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -544,7 +604,7 @@ class _GoldStarDivider extends StatelessWidget {
   }
 }
 
-// Inline 90 days timer widget
+// Inline countdown timer widget (to November 15, 2026)
 class _InlineLegacyCountdown extends StatefulWidget {
   @override
   State<_InlineLegacyCountdown> createState() => _InlineLegacyCountdownState();
@@ -552,28 +612,21 @@ class _InlineLegacyCountdown extends StatefulWidget {
 
 class _InlineLegacyCountdownState extends State<_InlineLegacyCountdown> {
   late DateTime targetDate;
-  late Timer _timer;
+  Timer? _timer;
   Duration _remaining = Duration.zero;
 
   @override
   void initState() {
     super.initState();
-    // Set target date to August 23rd, 12:00 AM (midnight) of the current or next year if already passed
-    final now = DateTime.now();
-    int year = now.year;
-    // Set to August 23rd, 12:00 PM (noon)
-    final august23 = DateTime(year, 8, 23, 12, 0, 0);
-    if (now.isAfter(august23)) {
-      // If already past this year's Aug 23, use next year
-      targetDate = DateTime(year + 1, 8, 23, 12, 0, 0);
-    } else {
-      targetDate = august23;
-    }
+    // Count down to November 15, 2026, 12:00 AM (midnight, local time)
+    targetDate = DateTime(2026, 11, 15);
     _updateRemaining();
-    _timer = Timer.periodic(
-      const Duration(seconds: 1),
-      (_) => _updateRemaining(),
-    );
+    if (_remaining > Duration.zero) {
+      _timer = Timer.periodic(
+        const Duration(seconds: 1),
+        (_) => _updateRemaining(),
+      );
+    }
   }
 
   void _updateRemaining() {
@@ -584,11 +637,12 @@ class _InlineLegacyCountdownState extends State<_InlineLegacyCountdown> {
         _remaining = Duration.zero;
       }
     });
+    if (_remaining == Duration.zero) _timer?.cancel();
   }
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 

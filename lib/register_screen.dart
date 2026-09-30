@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -13,7 +15,7 @@ import 'package:myautobiography/register_service.dart';
 import 'package:myautobiography/shared_pref_helper.dart';
 import 'package:myautobiography/success_screen2.dart';
 import 'package:myautobiography/theme_notifier.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/gestures.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -32,20 +34,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _termsTapRecognizer.onTap = _openTermsOfService;
   }
 
-  void _openTermsOfService() async {
-    const url =
-        'https://chollettiudayteja.blogspot.com/p/my-autobiography-terms-and-conditions.html';
-    if (await canLaunchUrlString(url)) {
-      await launchUrlString(url, mode: LaunchMode.externalApplication);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not open Terms of Service.')),
-      );
-    }
+  void _openTermsOfService() {
+    context.push('/terms-conditions');
   }
 
   bool termsAccepted = false;
-  CountryCode? selectedCountryCode;
+  CountryCode? selectedCountryCode = CountryCode.fromCountryCode('US');
   bool _isLoading = false;
   String? _errorMessage;
 
@@ -87,6 +81,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
       setState(() {
         _isLoading = false;
         _errorMessage = 'Please fill all fields and accept terms.';
+      });
+      return;
+    }
+    if (userNameController.text.contains(RegExp(r'\s'))) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'Display name cannot contain spaces.';
       });
       return;
     }
@@ -168,34 +169,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
             titleSpacing: 0,
             title: Padding(
               padding: const EdgeInsets.only(left: 40, top: 10),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image.asset('assets/appbar_logo.png', height: 60),
-                  const SizedBox(width: 5),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'MY AUTOBIOGRAPHY',
-                        style: GoogleFonts.bebasNeue(
-                          color: const Color(0xffc18e3b),
-                          fontSize: 22,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                      Text(
-                        '"Live a Life & Leave a Legacy"',
-                        style: GoogleFonts.poppins(
-                          color: Colors.white70,
-                          fontSize: 12,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              // child: Row(
+              //   crossAxisAlignment: CrossAxisAlignment.center,
+              //   children: [
+              //     Image.asset('assets/appbar_logo.png', height: 60),
+              //     const SizedBox(width: 5),
+              //     Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //         Text(
+              //           'MY AUTOBIOGRAPHY',
+              //           style: GoogleFonts.bebasNeue(
+              //             color: const Color(0xffc18e3b),
+              //             fontSize: 22,
+              //             letterSpacing: 2,
+              //           ),
+              //         ),
+              //         Text(
+              //           '"Live a Life & Leave a Legacy"',
+              //           style: GoogleFonts.poppins(
+              //             color: Colors.white70,
+              //             fontSize: 12,
+              //             fontStyle: FontStyle.italic,
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //   ],
+              // ),
             ),
           ),
         ),
@@ -258,9 +259,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     flex: 6,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Image.asset(
-                        'assets/image1.png',
+                      child: Image.network(
+                        'https://dl9325jolfmzn.cloudfront.net/assets/image1.png',
                         fit: BoxFit.contain,
+                        webHtmlElementStrategy: WebHtmlElementStrategy.fallback,
                         errorBuilder: (context, error, stackTrace) =>
                             Container(),
                       ),
@@ -274,39 +276,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 500),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
                             child: _RegisterContent(
-                            isWide: true,
-                            firstNameController: firstNameController,
-                            lastNameController: lastNameController,
-                            userNameController: userNameController,
-                            emailController: emailController,
-                            phoneController: phoneController,
-                            selectedMonth: selectedMonth,
-                            selectedDay: selectedDay,
-                            selectedYear: selectedYear,
-                            termsAccepted: termsAccepted,
-                            isLoading: _isLoading,
-                            errorMessage: _errorMessage,
-                            selectedCountryCode: selectedCountryCode,
-                            termsTapRecognizer: _termsTapRecognizer,
-                            onChangedDOB: (m, d, y) {
-                              setState(() {
-                                selectedMonth = m;
-                                selectedDay = d;
-                                selectedYear = y;
-                              });
-                            },
-                            onChangedCountry: (code) =>
-                                setState(() => selectedCountryCode = code),
-                            onChangedTerms: (v) =>
-                                setState(() => termsAccepted = v ?? false),
-                            onRegister: _onRegister,
+                              isWide: true,
+                              firstNameController: firstNameController,
+                              lastNameController: lastNameController,
+                              userNameController: userNameController,
+                              emailController: emailController,
+                              phoneController: phoneController,
+                              selectedMonth: selectedMonth,
+                              selectedDay: selectedDay,
+                              selectedYear: selectedYear,
+                              termsAccepted: termsAccepted,
+                              isLoading: _isLoading,
+                              errorMessage: _errorMessage,
+                              selectedCountryCode: selectedCountryCode,
+                              termsTapRecognizer: _termsTapRecognizer,
+                              onChangedDOB: (m, d, y) {
+                                setState(() {
+                                  selectedMonth = m;
+                                  selectedDay = d;
+                                  selectedYear = y;
+                                });
+                              },
+                              onChangedCountry: (code) =>
+                                  setState(() => selectedCountryCode = code),
+                              onChangedTerms: (v) =>
+                                  setState(() => termsAccepted = v ?? false),
+                              onRegister: _onRegister,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
                   ),
                 ],
               ),
@@ -654,10 +658,7 @@ class _RegisterContent extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 6),
-        _goldBorderFieldWithLabel(
-          hint: 'Display Name',
-          controller: userNameController,
-        ),
+        _DisplayNameField(controller: userNameController, isWide: isWide),
         const SizedBox(height: 4),
         Align(
           alignment: Alignment.centerLeft,
@@ -906,22 +907,110 @@ Widget _goldBorderFieldWithLabel({
   required String hint,
   TextEditingController? controller,
   bool isPhone = false,
+  List<TextInputFormatter>? inputFormatters,
 }) {
   return _GoldBorderFieldWithLabel(
     hint: hint,
     controller: controller,
     isPhone: isPhone,
+    inputFormatters: inputFormatters,
   );
+}
+
+// Strips whitespace from input and reports when it had to remove any.
+class _NoSpacesFormatter extends TextInputFormatter {
+  final VoidCallback onSpaceBlocked;
+  _NoSpacesFormatter(this.onSpaceBlocked);
+
+  static final _whitespace = RegExp(r'\s');
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    if (!newValue.text.contains(_whitespace)) return newValue;
+    onSpaceBlocked();
+    final cursor = newValue.selection.end.clamp(0, newValue.text.length);
+    final removedBeforeCursor = _whitespace
+        .allMatches(newValue.text.substring(0, cursor))
+        .length;
+    return TextEditingValue(
+      text: newValue.text.replaceAll(_whitespace, ''),
+      selection: TextSelection.collapsed(offset: cursor - removedBeforeCursor),
+    );
+  }
+}
+
+// Display name input that blocks spaces and briefly shows a warning when one is typed.
+class _DisplayNameField extends StatefulWidget {
+  final TextEditingController controller;
+  final bool isWide;
+  const _DisplayNameField({required this.controller, required this.isWide});
+
+  @override
+  State<_DisplayNameField> createState() => _DisplayNameFieldState();
+}
+
+class _DisplayNameFieldState extends State<_DisplayNameField> {
+  bool _showSpaceWarning = false;
+  Timer? _hideTimer;
+  late final _formatter = _NoSpacesFormatter(_onSpaceBlocked);
+
+  void _onSpaceBlocked() {
+    _hideTimer?.cancel();
+    setState(() => _showSpaceWarning = true);
+    _hideTimer = Timer(const Duration(seconds: 2), () {
+      if (mounted) setState(() => _showSpaceWarning = false);
+    });
+  }
+
+  @override
+  void dispose() {
+    _hideTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _goldBorderFieldWithLabel(
+          hint: 'Display Name',
+          controller: widget.controller,
+          inputFormatters: [_formatter],
+        ),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 150),
+          child: _showSpaceWarning
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    'Display name does not allow spaces.',
+                    style: GoogleFonts.poppins(
+                      color: Colors.redAccent,
+                      fontSize: widget.isWide ? 13 : 11,
+                    ),
+                  ),
+                )
+              : const SizedBox(width: double.infinity),
+        ),
+      ],
+    );
+  }
 }
 
 class _GoldBorderFieldWithLabel extends StatefulWidget {
   final String hint;
   final bool isPhone;
   final TextEditingController? controller;
+  final List<TextInputFormatter>? inputFormatters;
   const _GoldBorderFieldWithLabel({
     required this.hint,
     this.controller,
     this.isPhone = false,
+    this.inputFormatters,
   });
 
   @override
@@ -969,7 +1058,7 @@ class _GoldBorderFieldWithLabelState extends State<_GoldBorderFieldWithLabel> {
               FilteringTextInputFormatter.digitsOnly,
               LengthLimitingTextInputFormatter(10),
             ]
-          : null,
+          : widget.inputFormatters,
       decoration: InputDecoration(
         filled: true,
         fillColor: const Color(0xFF1C1C1E),
@@ -1165,7 +1254,8 @@ class _PhoneRowState extends State<_PhoneRow> {
   bool _hasFocus = false;
   bool _hasValue = false;
   late final TextEditingController _controller;
-  CountryCode? _selectedCountryCode;
+  // Default to +1 (US); the user can pick another country.
+  CountryCode? _selectedCountryCode = CountryCode.fromCountryCode('US');
 
   @override
   void initState() {
@@ -1217,7 +1307,7 @@ class _PhoneRowState extends State<_PhoneRow> {
                   if (widget.onCountryChanged != null)
                     widget.onCountryChanged!(code);
                 },
-                initialSelection: null,
+                initialSelection: 'US',
                 favorite: const [],
                 showCountryOnly: false,
                 showOnlyCountryWhenClosed: false,

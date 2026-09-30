@@ -5,9 +5,12 @@ import 'package:myautobiography/onboardingscreen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:myautobiography/request_as_star_screen.dart';
+import 'package:myautobiography/terms_conditions_screen.dart';
 
 void main() {
   usePathUrlStrategy();
+  // Make context.push() update the browser address bar (e.g. /terms-conditions).
+  GoRouter.optionURLReflectsImperativeAPIs = true;
   runApp(const MyApp());
 }
 
@@ -17,6 +20,10 @@ final GoRouter _router = GoRouter(
   routes: [
     // --- User/Customer Route ---
     GoRoute(path: '/', builder: (context, state) => const OnBoardingscreen()),
+    GoRoute(
+      path: '/terms-conditions',
+      builder: (context, state) => const TermsConditionsScreen(),
+    ),
     // GoRoute(
     //   path: '/',
     //   builder: (context, state) => const RequestAsStarScreen(),
