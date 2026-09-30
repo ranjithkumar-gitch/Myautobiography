@@ -646,7 +646,7 @@ class _RegisterContent extends StatelessWidget {
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            "User Name *",
+            "Display Name *",
             style: GoogleFonts.poppins(
               color: kgoldColor,
               fontSize: isWide ? 18 : 14,
@@ -655,7 +655,7 @@ class _RegisterContent extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         _goldBorderFieldWithLabel(
-          hint: 'User Name',
+          hint: 'Display Name',
           controller: userNameController,
         ),
         const SizedBox(height: 4),

@@ -1,5 +1,7 @@
 class AppConstant {
-  static String mcbBaseURL = 'https://dev-mab.clearfocus.in/api/';
+  // static String mcbBaseURL = 'https://dev-mab.clearfocus.in/api/';
+  static String mcbBaseURL = 'mab-admin.myautobiography.com/';
+ 
 }
 
 // class ApiConstants {
