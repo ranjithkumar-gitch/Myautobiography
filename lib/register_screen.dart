@@ -168,37 +168,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             elevation: 0,
             automaticallyImplyLeading: false,
             titleSpacing: 0,
-            title: Padding(
-              padding: const EdgeInsets.only(left: 40, top: 10),
-              // child: Row(
-              //   crossAxisAlignment: CrossAxisAlignment.center,
-              //   children: [
-              //     Image.asset('assets/appbar_logo.png', height: 60),
-              //     const SizedBox(width: 5),
-              //     Column(
-              //       crossAxisAlignment: CrossAxisAlignment.start,
-              //       children: [
-              //         Text(
-              //           'MY AUTOBIOGRAPHY',
-              //           style: GoogleFonts.bebasNeue(
-              //             color: const Color(0xffc18e3b),
-              //             fontSize: 22,
-              //             letterSpacing: 2,
-              //           ),
-              //         ),
-              //         Text(
-              //           '"Live a Life & Leave a Legacy"',
-              //           style: GoogleFonts.poppins(
-              //             color: Colors.white70,
-              //             fontSize: 12,
-              //             fontStyle: FontStyle.italic,
-              //           ),
-              //         ),
-              //       ],
-              //     ),
-              //   ],
-              // ),
-            ),
+            title: Padding(padding: const EdgeInsets.only(left: 40, top: 10)),
           ),
         ),
         // backgroundColor: Colors.black,
@@ -207,39 +177,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             Positioned.fill(
               child: Image.asset('assets/bg_1411.jpg', fit: BoxFit.cover),
             ),
-            //Logo in top left
-            // Positioned(
-            //   left: 40,
-            //   top: 32,
-            //   child: Row(
-            //     crossAxisAlignment: CrossAxisAlignment.center,
-            //     children: [
-            //       Image.asset('assets/image1.png', height: 60),
-            //       const SizedBox(width: 16),
-            //       Column(
-            //         crossAxisAlignment: CrossAxisAlignment.start,
-            //         children: [
-            //           Text(
-            //             'MY AUTOBIOGRAPHY',
-            //             style: GoogleFonts.bebasNeue(
-            //               color: const Color(0xffc18e3b),
-            //               fontSize: 28,
-            //               letterSpacing: 2,
-            //             ),
-            //           ),
-            //           Text(
-            //             '"Live a Life & Leave a Legacy"',
-            //             style: GoogleFonts.poppins(
-            //               color: Colors.white70,
-            //               fontSize: 13,
-            //               fontStyle: FontStyle.italic,
-            //             ),
-            //           ),
-            //         ],
-            //       ),
-            //     ],
-            //   ),
-            // ),
+
             // Logo and branding at top left corner
             SafeArea(
               child: Row(
@@ -325,46 +263,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(80),
-        child: AppBar(
-          backgroundColor: Colors.black.withValues(alpha: 0.2),
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          titleSpacing: 0,
-          title: Padding(
-            padding: const EdgeInsets.only(left: 16, top: 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset('assets/appbar_logo.png', height: 44),
-                const SizedBox(width: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'MY AUTOBIOGRAPHY',
-                      style: GoogleFonts.bebasNeue(
-                        color: const Color(0xffc18e3b),
-                        fontSize: 18,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                    Text(
-                      '"Live a Life & Leave a Legacy"',
-                      style: GoogleFonts.poppins(
-                        color: Colors.white70,
-                        fontSize: 10,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      // appBar: PreferredSize(
+      //   preferredSize: const Size.fromHeight(80),
+      //   child: AppBar(
+      //     backgroundColor: Colors.black.withValues(alpha: 0.2),
+      //     elevation: 0,
+      //     automaticallyImplyLeading: false,
+      //     titleSpacing: 0,
+      //     title: Padding(
+      //       padding: const EdgeInsets.only(left: 16, top: 8),
+      //       child: Row(
+      //         crossAxisAlignment: CrossAxisAlignment.center,
+      //         children: [
+      //           Image.asset('assets/App_logo_2.png', height: 44),
+      //           const SizedBox(width: 8),
+      //           Column(
+      //             crossAxisAlignment: CrossAxisAlignment.start,
+      //             children: [
+      //               Text(
+      //                 'MY AUTOBIOGRAPHY',
+      //                 style: GoogleFonts.bebasNeue(
+      //                   color: const Color(0xffc18e3b),
+      //                   fontSize: 18,
+      //                   letterSpacing: 2,
+      //                 ),
+      //               ),
+      //               Text(
+      //                 '"Live a Life & Leave a Legacy"',
+      //                 style: GoogleFonts.poppins(
+      //                   color: Colors.white70,
+      //                   fontSize: 10,
+      //                   fontStyle: FontStyle.italic,
+      //                 ),
+      //               ),
+      //             ],
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+      //   ),
+      // ),
       body: Stack(
         children: [
           Positioned.fill(
@@ -386,7 +324,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         height: 250,
                         width: 250,
                         child: Image.asset(
-                          'assets/logo_4kquality.png',
+                          'assets/App_logo_2.png',
                           fit: BoxFit.contain,
                         ),
                       ),
@@ -746,7 +684,7 @@ class _RegisterContent extends StatelessWidget {
                   ),
                   children: [
                     TextSpan(
-                      text: 'Terms of Service',
+                      text: 'Terms & Conditions',
                       style: TextStyle(
                         color: kgoldColor,
                         decoration: TextDecoration.underline,

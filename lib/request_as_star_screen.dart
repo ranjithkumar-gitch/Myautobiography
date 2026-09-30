@@ -108,37 +108,6 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
                 left: isWide ? 40 : 4,
                 top: isWide ? 10 : 8,
               ),
-              // child: Row(
-              //   crossAxisAlignment: CrossAxisAlignment.center,
-              //   children: [
-              //     Image.asset(
-              //       'assets/appbar_logo.png',
-              //       height: isWide ? 60 : 44,
-              //     ),
-              //     SizedBox(width: isWide ? 5 : 8),
-              //     Column(
-              //       crossAxisAlignment: CrossAxisAlignment.start,
-              //       children: [
-              //         Text(
-              //           'MY AUTOBIOGRAPHY',
-              //           style: GoogleFonts.bebasNeue(
-              //             color: const Color(0xffc18e3b),
-              //             fontSize: isWide ? 22 : 18,
-              //             letterSpacing: 2,
-              //           ),
-              //         ),
-              //         Text(
-              //           '"Live a Life & Leave a Legacy"',
-              //           style: GoogleFonts.poppins(
-              //             color: Colors.white70,
-              //             fontSize: isWide ? 12 : 10,
-              //             fontStyle: FontStyle.italic,
-              //           ),
-              //         ),
-              //       ],
-              //     ),
-              //   ],
-              // ),
             ),
           ),
         ),
@@ -151,44 +120,7 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
             LayoutBuilder(
               builder: (context, constraints) {
                 final isWide = constraints.maxWidth > 900;
-                if (!isWide) {
-                  // return Align(
-                  //   alignment: Alignment.topRight,
-                  //   child: Padding(
-                  //     padding: const EdgeInsets.only(top: 16.0, right: 8.0),
-                  //     child: Material(
-                  //       color: Colors.transparent,
-                  //       child: InkWell(
-                  //         borderRadius: BorderRadius.circular(24),
-                  //         onTap: () {
-                  //           Navigator.of(context).pushAndRemoveUntil(
-                  //             MaterialPageRoute(
-                  //               builder: (context) => OnBoardingscreen(),
-                  //             ),
-                  //             (route) => false,
-                  //           );
-                  //         },
-                  //         child: Container(
-                  //           width: 40,
-                  //           height: 40,
-                  //           decoration: BoxDecoration(
-                  //             shape: BoxShape.circle,
-                  //             color: Colors.black.withOpacity(0.7),
-                  //             border: Border.all(color: kgoldColor, width: 2),
-                  //           ),
-                  //           child: const Center(
-                  //             child: Icon(
-                  //               Icons.close,
-                  //               color: kgoldColor,
-                  //               size: 22,
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // );
-                }
+                if (!isWide) {}
                 return const SizedBox.shrink();
               },
             ),

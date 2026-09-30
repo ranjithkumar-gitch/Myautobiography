@@ -27,34 +27,6 @@ class StarRequestSubmittedScreen extends StatelessWidget {
               left: isWide ? 40 : 16,
               top: isWide ? 10 : 8,
             ),
-            // child: Row(
-            //   crossAxisAlignment: CrossAxisAlignment.center,
-            //   children: [
-            //     Image.asset('assets/appbar_logo.png', height: isWide ? 60 : 44),
-            //     SizedBox(width: isWide ? 5 : 8),
-            //     Column(
-            //       crossAxisAlignment: CrossAxisAlignment.start,
-            //       children: [
-            //         Text(
-            //           'MY AUTOBIOGRAPHY',
-            //           style: GoogleFonts.bebasNeue(
-            //             color: const Color(0xffc18e3b),
-            //             fontSize: isWide ? 22 : 18,
-            //             letterSpacing: 2,
-            //           ),
-            //         ),
-            //         Text(
-            //           '"Live a Life & Leave a Legacy"',
-            //           style: GoogleFonts.poppins(
-            //             color: Colors.white70,
-            //             fontSize: isWide ? 12 : 10,
-            //             fontStyle: FontStyle.italic,
-            //           ),
-            //         ),
-            //       ],
-            //     ),
-            //   ],
-            // ),
           ),
         ),
       ),

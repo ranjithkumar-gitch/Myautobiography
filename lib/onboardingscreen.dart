@@ -36,7 +36,7 @@ class _OnBoardingscreenState extends State<OnBoardingscreen> {
         context,
       ).ignore();
       precacheImage(
-        const AssetImage('assets/logo_4kquality.png'),
+        const AssetImage('assets/App_logo_2.png'),
         context,
       ).ignore();
     }
@@ -61,37 +61,7 @@ class _OnBoardingscreenState extends State<OnBoardingscreen> {
               elevation: 0,
               automaticallyImplyLeading: false,
               titleSpacing: 0,
-              title: Padding(
-                padding: const EdgeInsets.only(left: 40, top: 10),
-                // child: Row(
-                //   crossAxisAlignment: CrossAxisAlignment.center,
-                //   children: [
-                //     Image.asset('assets/appbar_logo.png', height: 60),
-                //     const SizedBox(width: 5),
-                //     Column(
-                //       crossAxisAlignment: CrossAxisAlignment.start,
-                //       children: [
-                //         Text(
-                //           'MY AUTOBIOGRAPHY',
-                //           style: GoogleFonts.bebasNeue(
-                //             color: const Color(0xffc18e3b),
-                //             fontSize: 22,
-                //             letterSpacing: 2,
-                //           ),
-                //         ),
-                //         Text(
-                //           '"Live a Life & Leave a Legacy"',
-                //           style: GoogleFonts.poppins(
-                //             color: Colors.white70,
-                //             fontSize: 12,
-                //             fontStyle: FontStyle.italic,
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //   ],
-                // ),
-              ),
+              title: Padding(padding: const EdgeInsets.only(left: 40, top: 10)),
             ),
           ),
           body: Stack(
@@ -366,37 +336,7 @@ class _OnBoardingscreenState extends State<OnBoardingscreen> {
             elevation: 0,
             automaticallyImplyLeading: false,
             titleSpacing: 0,
-            title: Padding(
-              padding: const EdgeInsets.only(left: 16, top: 8),
-              // child: Row(
-              //   crossAxisAlignment: CrossAxisAlignment.center,
-              //   children: [
-              //     Image.asset('assets/appbar_logo.png', height: 44),
-              //     const SizedBox(width: 8),
-              //     Column(
-              //       crossAxisAlignment: CrossAxisAlignment.start,
-              //       children: [
-              //         Text(
-              //           'MY AUTOBIOGRAPHY',
-              //           style: GoogleFonts.bebasNeue(
-              //             color: const Color(0xffc18e3b),
-              //             fontSize: 18,
-              //             letterSpacing: 2,
-              //           ),
-              //         ),
-              //         Text(
-              //           '"Live a Life & Leave a Legacy"',
-              //           style: GoogleFonts.poppins(
-              //             color: Colors.white70,
-              //             fontSize: 10,
-              //             fontStyle: FontStyle.italic,
-              //           ),
-              //         ),
-              //       ],
-              //     ),
-              //   ],
-              // ),
-            ),
+            title: Padding(padding: const EdgeInsets.only(left: 16, top: 8)),
           ),
         ),
         body: Stack(
@@ -418,7 +358,7 @@ class _OnBoardingscreenState extends State<OnBoardingscreen> {
                           height: 365,
                           width: 365,
                           child: Image.asset(
-                            'assets/logo_4kquality.png',
+                            'assets/App_logo_2.png',
                             fit: BoxFit.contain,
                             cacheWidth: 365,
                           ),
