@@ -77,11 +77,17 @@ class StarRequestSubmittedScreen extends StatelessWidget {
                         flex: 6,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                            'assets/5thscreen.jpg',
+                          child: Image.network(
+                            'https://dl9325jolfmzn.cloudfront.net/assets/5thscreen.jpg',
                             fit: BoxFit.contain,
+                            webHtmlElementStrategy:
+                                WebHtmlElementStrategy.fallback,
+                            // Fall back to the bundled copy if the CDN can't be reached.
                             errorBuilder: (context, error, stackTrace) =>
-                                Container(),
+                                Image.network(
+                                  'https://dl9325jolfmzn.cloudfront.net/assets/5thscreen.jpg',
+                                  fit: BoxFit.contain,
+                                ),
                           ),
                         ),
                       ),

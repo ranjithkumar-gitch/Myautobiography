@@ -124,11 +124,17 @@ class SuccessScreen2 extends StatelessWidget {
                         flex: 6,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                            'assets/img_right.jpg',
+                          child: Image.network(
+                            'https://dl9325jolfmzn.cloudfront.net/assets/img_right.jpg',
                             fit: BoxFit.contain,
+                            webHtmlElementStrategy:
+                                WebHtmlElementStrategy.fallback,
+                            // Fall back to the bundled copy if the CDN can't be reached.
                             errorBuilder: (context, error, stackTrace) =>
-                                Container(),
+                                Image.network(
+                                  'https://dl9325jolfmzn.cloudfront.net/assets/img_right.jpg',
+                                  fit: BoxFit.contain,
+                                ),
                           ),
                         ),
                       ),
@@ -388,7 +394,16 @@ class SuccessScreen2 extends StatelessWidget {
                             children: [
                               SizedBox(
                                 height: 300,
-                                child: Image.asset('assets/img_right.jpg'),
+                                child: Image.network(
+                                  'https://dl9325jolfmzn.cloudfront.net/assets/img_right.jpg',
+                                  webHtmlElementStrategy:
+                                      WebHtmlElementStrategy.fallback,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Image.network(
+                                        'https://dl9325jolfmzn.cloudfront.net/assets/img_right.jpg',
+                                        fit: BoxFit.contain,
+                                      ),
+                                ),
                               ),
                               const SizedBox(height: 4),
                               ShaderMask(
@@ -543,7 +558,14 @@ class _BackToHomeButton extends StatelessWidget {
       width: double.infinity,
       height: isWide ? 46 : 50,
       child: OutlinedButton(
-        onPressed: () => context.go('/'),
+        onPressed: () {
+          // Register/Success were opened with Navigator.push, so go_router's
+          // location is still '/' and context.go('/') alone is a no-op.
+          // Pop those screens first, then make sure we land on the home route.
+          final router = GoRouter.of(context);
+          Navigator.of(context).popUntil((route) => route.isFirst);
+          router.go('/');
+        },
         style: OutlinedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),

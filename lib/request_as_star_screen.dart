@@ -204,11 +204,17 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
                           flex: 6,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Image.asset(
-                              'assets/4thscreen.jpg',
+                            child: Image.network(
+                              'https://dl9325jolfmzn.cloudfront.net/assets/4thscreen.jpg',
                               fit: BoxFit.contain,
+                              webHtmlElementStrategy:
+                                  WebHtmlElementStrategy.fallback,
+                              // Fall back to the bundled copy if the CDN can't be reached.
                               errorBuilder: (context, error, stackTrace) =>
-                                  Container(),
+                                  Image.network(
+                                    'https://dl9325jolfmzn.cloudfront.net/assets/4thscreen.jpg',
+                                    fit: BoxFit.contain,
+                                  ),
                             ),
                           ),
                         ),

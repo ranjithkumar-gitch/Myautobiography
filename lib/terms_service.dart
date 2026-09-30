@@ -5,7 +5,7 @@ import 'models/terms_response.dart';
 
 class TermsService {
   static Future<TermsResponse> fetchTerms() async {
-    final url = '${AppConstant.mabBaseURL}mobile/auth/terms-v2';
+    final url = '${AppConstant.mabBaseURLTerms}auth/terms-v2';
     final response = await http.post(
       Uri.parse(url),
       headers: {'Content-Type': 'application/json'},
