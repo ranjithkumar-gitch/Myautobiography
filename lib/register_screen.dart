@@ -84,10 +84,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
       return;
     }
-    if (userNameController.text.contains(RegExp(r'\s'))) {
+    if (!RegExp(r'^[A-Za-z0-9]+$').hasMatch(userNameController.text)) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'Display name cannot contain spaces.';
+        _errorMessage =
+            'Display name can only contain letters and numbers. Spaces and special characters are not allowed.';
       });
       return;
     }
@@ -620,6 +621,9 @@ class _RegisterContent extends StatelessWidget {
                   _goldBorderFieldWithLabel(
                     hint: 'First Name',
                     controller: firstNameController,
+                    keyboardType: TextInputType.name,
+                    textCapitalization: TextCapitalization.words,
+                    autofillHints: const [AutofillHints.givenName],
                   ),
                 ],
               ),
@@ -640,6 +644,9 @@ class _RegisterContent extends StatelessWidget {
                   _goldBorderFieldWithLabel(
                     hint: 'Last Name',
                     controller: lastNameController,
+                    keyboardType: TextInputType.name,
+                    textCapitalization: TextCapitalization.words,
+                    autofillHints: const [AutofillHints.familyName],
                   ),
                 ],
               ),
@@ -686,6 +693,9 @@ class _RegisterContent extends StatelessWidget {
         _goldBorderFieldWithLabel(
           hint: 'Enter your Email',
           controller: emailController,
+          keyboardType: TextInputType.emailAddress,
+          autocorrect: false,
+          autofillHints: const [AutofillHints.email],
         ),
         SizedBox(height: isWide ? 8 : 15),
         // Date of Birth
@@ -908,41 +918,49 @@ Widget _goldBorderFieldWithLabel({
   TextEditingController? controller,
   bool isPhone = false,
   List<TextInputFormatter>? inputFormatters,
+  TextInputType? keyboardType,
+  TextCapitalization textCapitalization = TextCapitalization.none,
+  bool autocorrect = true,
+  Iterable<String>? autofillHints,
 }) {
   return _GoldBorderFieldWithLabel(
     hint: hint,
     controller: controller,
     isPhone: isPhone,
     inputFormatters: inputFormatters,
+    keyboardType: keyboardType,
+    textCapitalization: textCapitalization,
+    autocorrect: autocorrect,
+    autofillHints: autofillHints,
   );
 }
 
-// Strips whitespace from input and reports when it had to remove any.
-class _NoSpacesFormatter extends TextInputFormatter {
-  final VoidCallback onSpaceBlocked;
-  _NoSpacesFormatter(this.onSpaceBlocked);
+// Strips anything other than letters and digits and reports when it had to remove any.
+class _AlphanumericFormatter extends TextInputFormatter {
+  final VoidCallback onCharBlocked;
+  _AlphanumericFormatter(this.onCharBlocked);
 
-  static final _whitespace = RegExp(r'\s');
+  static final _disallowed = RegExp(r'[^A-Za-z0-9]');
 
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    if (!newValue.text.contains(_whitespace)) return newValue;
-    onSpaceBlocked();
+    if (!newValue.text.contains(_disallowed)) return newValue;
+    onCharBlocked();
     final cursor = newValue.selection.end.clamp(0, newValue.text.length);
-    final removedBeforeCursor = _whitespace
+    final removedBeforeCursor = _disallowed
         .allMatches(newValue.text.substring(0, cursor))
         .length;
     return TextEditingValue(
-      text: newValue.text.replaceAll(_whitespace, ''),
+      text: newValue.text.replaceAll(_disallowed, ''),
       selection: TextSelection.collapsed(offset: cursor - removedBeforeCursor),
     );
   }
 }
 
-// Display name input that blocks spaces and briefly shows a warning when one is typed.
+// Display name input that blocks spaces/special characters and briefly shows a warning when one is typed.
 class _DisplayNameField extends StatefulWidget {
   final TextEditingController controller;
   final bool isWide;
@@ -953,15 +971,15 @@ class _DisplayNameField extends StatefulWidget {
 }
 
 class _DisplayNameFieldState extends State<_DisplayNameField> {
-  bool _showSpaceWarning = false;
+  bool _showCharWarning = false;
   Timer? _hideTimer;
-  late final _formatter = _NoSpacesFormatter(_onSpaceBlocked);
+  late final _formatter = _AlphanumericFormatter(_onCharBlocked);
 
-  void _onSpaceBlocked() {
+  void _onCharBlocked() {
     _hideTimer?.cancel();
-    setState(() => _showSpaceWarning = true);
+    setState(() => _showCharWarning = true);
     _hideTimer = Timer(const Duration(seconds: 2), () {
-      if (mounted) setState(() => _showSpaceWarning = false);
+      if (mounted) setState(() => _showCharWarning = false);
     });
   }
 
@@ -980,14 +998,17 @@ class _DisplayNameFieldState extends State<_DisplayNameField> {
           hint: 'Display Name',
           controller: widget.controller,
           inputFormatters: [_formatter],
+          keyboardType: TextInputType.text,
+          autocorrect: false,
+          autofillHints: const [AutofillHints.newUsername],
         ),
         AnimatedSize(
           duration: const Duration(milliseconds: 150),
-          child: _showSpaceWarning
+          child: _showCharWarning
               ? Padding(
                   padding: const EdgeInsets.only(top: 4),
                   child: Text(
-                    'Display name does not allow spaces.',
+                    'Only letters and numbers are allowed. No spaces or special characters.',
                     style: GoogleFonts.poppins(
                       color: Colors.redAccent,
                       fontSize: widget.isWide ? 13 : 11,
@@ -1006,11 +1027,19 @@ class _GoldBorderFieldWithLabel extends StatefulWidget {
   final bool isPhone;
   final TextEditingController? controller;
   final List<TextInputFormatter>? inputFormatters;
+  final TextInputType? keyboardType;
+  final TextCapitalization textCapitalization;
+  final bool autocorrect;
+  final Iterable<String>? autofillHints;
   const _GoldBorderFieldWithLabel({
     required this.hint,
     this.controller,
     this.isPhone = false,
     this.inputFormatters,
+    this.keyboardType,
+    this.textCapitalization = TextCapitalization.none,
+    this.autocorrect = true,
+    this.autofillHints,
   });
 
   @override
@@ -1052,7 +1081,13 @@ class _GoldBorderFieldWithLabelState extends State<_GoldBorderFieldWithLabel> {
       focusNode: focusNode,
       textInputAction: TextInputAction.next,
       style: const TextStyle(color: Colors.white),
-      keyboardType: widget.isPhone ? TextInputType.number : TextInputType.text,
+      keyboardType:
+          widget.keyboardType ??
+          (widget.isPhone ? TextInputType.phone : TextInputType.text),
+      textCapitalization: widget.textCapitalization,
+      autocorrect: widget.autocorrect,
+      enableSuggestions: widget.autocorrect,
+      autofillHints: widget.autofillHints,
       inputFormatters: widget.isPhone
           ? [
               FilteringTextInputFormatter.digitsOnly,
@@ -1388,7 +1423,9 @@ class _PhoneRowState extends State<_PhoneRow> {
             controller: _controller,
             focusNode: _focusNode,
             style: const TextStyle(color: Colors.white),
-            keyboardType: TextInputType.number,
+            keyboardType: TextInputType.phone,
+            textInputAction: TextInputAction.done,
+            autofillHints: const [AutofillHints.telephoneNumberNational],
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
               LengthLimitingTextInputFormatter(10),
