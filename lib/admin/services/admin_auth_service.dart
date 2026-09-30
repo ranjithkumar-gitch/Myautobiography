@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:myautobiography/constants/api_constants.dart';
 
 /// Result returned by [AdminAuthService.login].
 class AdminLoginResult {
@@ -13,7 +14,7 @@ class AdminLoginResult {
 }
 
 class AdminAuthService {
-  static const _loginUrl = 'https://dev-mab.clearfocus.in/api/admin/login-v1';
+  static const _loginUrl = '${AppConstant.mabBaseURL}admin/login-v1';
   static const _tokenKey = 'admin_access_token';
 
   static const _storage = FlutterSecureStorage(

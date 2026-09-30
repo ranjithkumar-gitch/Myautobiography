@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:myautobiography/constants/api_constants.dart';
 import '../models/stargazer.dart';
 import '../models/star_request.dart';
 import 'admin_auth_service.dart';
 
 class StargazerService {
-  static const _baseUrl = 'https://dev-mab.clearfocus.in';
+  static const _baseUrl = AppConstant.mabBaseURL;
 
   String _apiDate(DateTime date) {
     final month = date.month.toString().padLeft(2, '0');
@@ -44,7 +45,7 @@ class StargazerService {
     DateTime? startDate,
     DateTime? endDate,
   }) async {
-    final uri = Uri.parse('$_baseUrl/api/stargazers/list-v1');
+    final uri = Uri.parse('${_baseUrl}stargazers/list-v1');
     final response = await http.post(
       uri,
       headers: await _authHeaders(),
@@ -72,7 +73,7 @@ class StargazerService {
   }
 
   Future<void> deleteStargazer(String id) async {
-    final uri = Uri.parse('$_baseUrl/api/stargazers/delete-v1');
+    final uri = Uri.parse('${_baseUrl}stargazers/delete-v1');
     final response = await http.post(
       uri,
       headers: await _authHeaders(),
@@ -95,7 +96,7 @@ class StargazerService {
     DateTime? startDate,
     DateTime? endDate,
   }) async {
-    final uri = Uri.parse('$_baseUrl/api/stargazers/star-requests/list-v1');
+    final uri = Uri.parse('${_baseUrl}stargazers/star-requests/list-v1');
     final response = await http.post(
       uri,
       headers: await _authHeaders(),
@@ -123,7 +124,7 @@ class StargazerService {
   }
 
   Future<void> deleteStarRequest(String id) async {
-    final uri = Uri.parse('$_baseUrl/api/stargazers/star-requests/delete-v1');
+    final uri = Uri.parse('${_baseUrl}stargazers/star-requests/delete-v1');
     final response = await http.post(
       uri,
       headers: await _authHeaders(),
