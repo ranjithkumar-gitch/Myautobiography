@@ -64,7 +64,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return 'Please enter a valid user account email.';
     }
     if (selectedMonth == null || selectedDay == null || selectedYear == null) {
-      return 'Please select your full date of birth.';
+      return 'Please select your full birthday.';
     }
     if (_digitsOnly(phoneController.text).isEmpty ||
         selectedCountryCode == null) {
@@ -611,11 +611,11 @@ class _RegisterContent extends StatelessWidget {
           autofillHints: const [AutofillHints.email],
         ),
         SizedBox(height: isWide ? 8 : 15),
-        // Date of Birth
+        // Birthday
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            "Date of Birth *",
+            "Birthday *",
             style: GoogleFonts.poppins(
               color: kgoldColor,
               fontSize: isWide ? 18 : 14,
@@ -669,7 +669,7 @@ class _RegisterContent extends StatelessWidget {
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            'Min 6 characters with uppercase, lowercase, number & special character.',
+            'Min 7 characters with uppercase, lowercase, number & special character.',
             style: GoogleFonts.poppins(
               color: Colors.white70,
               fontSize: isWide ? 13 : 11,
