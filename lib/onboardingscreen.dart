@@ -352,13 +352,9 @@ class _OnBoardingscreenState extends State<OnBoardingscreen> {
                             SizedBox(
                               height: 365,
                               width: 365,
-                              child: Image.network(
-                                'https://dl9325jolfmzn.cloudfront.net/assets/image1.png',
+                              child: Image.asset(
+                                'assets/img1.png',
                                 fit: BoxFit.contain,
-                                webHtmlElementStrategy:
-                                    WebHtmlElementStrategy.fallback,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    const SizedBox.shrink(),
                               ),
                             ),
                             const SizedBox(height: 10),
@@ -506,18 +502,14 @@ class _OnboardingContent extends StatelessWidget {
               // Icon(Icons.group_outlined, size: 30, color: Color(0xffc18e3b)),
               // const SizedBox(width: 5),
               Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  ShaderMask(
-                    shaderCallback: (bounds) =>
-                        goldTextGradient.createShader(bounds),
-                    child: Text(
-                      'EARLY ACCESS IS LIMITED.',
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13,
-                      ),
+                  Text(
+                    'EARLY ACCESS IS LIMITED.',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
                     ),
                   ),
                   ShaderMask(

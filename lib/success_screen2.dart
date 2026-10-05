@@ -343,20 +343,6 @@ class SuccessScreen2 extends StatelessWidget {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(
-                                height: 300,
-                                child: Image.network(
-                                  'https://dl9325jolfmzn.cloudfront.net/assets/img_right.jpg',
-                                  webHtmlElementStrategy:
-                                      WebHtmlElementStrategy.fallback,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      Image.network(
-                                        'https://dl9325jolfmzn.cloudfront.net/assets/img_right.jpg',
-                                        fit: BoxFit.contain,
-                                      ),
-                                ),
-                              ),
-                              const SizedBox(height: 4),
                               ShaderMask(
                                 shaderCallback: (bounds) =>
                                     goldTextGradient.createShader(bounds),

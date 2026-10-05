@@ -309,7 +309,16 @@ class StarRequestSubmittedScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const SizedBox(height: 56),
+                              const SizedBox(height: 10),
+                              SizedBox(
+                                height: 300,
+                                width: 300,
+                                child: Image.asset(
+                                  'assets/img1.png',
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                              const SizedBox(height: 24),
                               Container(
                                 padding: const EdgeInsets.all(3),
                                 decoration: BoxDecoration(
@@ -436,7 +445,7 @@ class StarRequestSubmittedScreen extends StatelessWidget {
                               //     ),
                               //   ),
                               // ),
-                              const SizedBox(height: 32),
+                              const SizedBox(height: 10),
                               SizedBox(
                                 width: double.infinity,
                                 height: 52,

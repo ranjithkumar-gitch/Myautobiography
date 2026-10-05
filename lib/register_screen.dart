@@ -298,20 +298,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(height: 16),
-                      // Logo always on top, centered
-                      SizedBox(
-                        height: 250,
-                        width: 250,
-                        child: Image.network(
-                          'https://dl9325jolfmzn.cloudfront.net/assets/image1.png',
-                          fit: BoxFit.contain,
-                          webHtmlElementStrategy:
-                              WebHtmlElementStrategy.fallback,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const SizedBox.shrink(),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
                       ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 500),
                         child: _RegisterContent(
