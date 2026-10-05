@@ -6,6 +6,7 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:myautobiography/register_screen.dart';
 import 'package:myautobiography/success_screen2.dart';
 import 'package:myautobiography/terms_conditions_screen.dart';
+import 'package:myautobiography/terms_service.dart';
 
 void main() {
   usePathUrlStrategy();
@@ -38,6 +39,14 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/terms-conditions',
       builder: (context, state) => const TermsConditionsScreen(),
+    ),
+    GoRoute(
+      path: '/privacy-policy',
+      builder: (context, state) =>
+          const TermsConditionsScreen(
+            title: 'Privacy Policy',
+            fetch: TermsService.fetchPrivacyPolicy,
+          ),
     ),
     // GoRoute(
     //   path: '/',

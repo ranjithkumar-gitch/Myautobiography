@@ -572,7 +572,7 @@ class _GoldStarDivider extends StatelessWidget {
   }
 }
 
-// Inline countdown timer widget (to November 15, 2026)
+// Inline countdown timer widget (to January 1, 2027)
 class _InlineLegacyCountdown extends StatefulWidget {
   @override
   State<_InlineLegacyCountdown> createState() => _InlineLegacyCountdownState();
@@ -586,8 +586,8 @@ class _InlineLegacyCountdownState extends State<_InlineLegacyCountdown> {
   @override
   void initState() {
     super.initState();
-    // Count down to November 15, 2026, 12:00 AM (midnight, local time)
-    targetDate = DateTime(2026, 11, 15);
+    // Count down to January 1, 2027, 12:00 AM (midnight, local time)
+    targetDate = DateTime(2027, 1, 1);
     _updateRemaining();
     if (_remaining > Duration.zero) {
       _timer = Timer.periodic(

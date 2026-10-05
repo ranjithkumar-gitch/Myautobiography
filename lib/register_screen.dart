@@ -8,11 +8,10 @@ import 'package:country_code_picker/country_code_picker.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phone_numbers_parser/phone_numbers_parser.dart';
-import 'package:myautobiography/app_shared_preferences.dart';
 import 'package:myautobiography/constants/colors.dart';
 import 'package:myautobiography/models/register_request.dart';
+import 'package:myautobiography/otp_screen.dart';
 import 'package:myautobiography/register_service.dart';
-import 'package:myautobiography/shared_pref_helper.dart';
 import 'package:myautobiography/theme_notifier.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/gestures.dart';
@@ -38,6 +37,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   static final _emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+  // At least 6 characters with an uppercase letter, a lowercase letter, a
+  // number and a special character (e.g. Mab@123).
+  static final _passwordRegex = RegExp(
+    r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$',
+  );
+  static const _passwordRules =
+      'Password must be at least 6 characters and include an uppercase letter, a lowercase letter, a number and a special character.';
 
   // Returns the first problem with the form, or null when it is valid.
   String? _validate() {
@@ -48,14 +54,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return 'Please enter your last name.';
     }
     final displayName = userNameController.text.trim();
-    if (displayName.isEmpty) return 'Please enter a display name.';
+    if (displayName.isEmpty) return 'Please enter a user name.';
     if (!RegExp(r'^[A-Za-z0-9]+$').hasMatch(displayName)) {
-      return 'Display name can only contain letters and numbers. Spaces and special characters are not allowed.';
+      return 'User name can only contain letters and numbers. Spaces and special characters are not allowed.';
     }
     final email = emailController.text.trim();
-    if (email.isEmpty) return 'Please enter your email address.';
+    if (email.isEmpty) return 'Please enter your user account email.';
     if (!_emailRegex.hasMatch(email)) {
-      return 'Please enter a valid email address.';
+      return 'Please enter a valid user account email.';
     }
     if (selectedMonth == null || selectedDay == null || selectedYear == null) {
       return 'Please select your full date of birth.';
@@ -66,6 +72,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
     if (_nationalPhoneNumber(phoneController.text) == null) {
       return 'Please enter a 10-digit phone number.';
+    }
+    final password = passwordController.text;
+    if (password.isEmpty) return 'Please enter a password.';
+    if (!_passwordRegex.hasMatch(password)) return _passwordRules;
+    if (confirmPasswordController.text.isEmpty) {
+      return 'Please confirm your password.';
+    }
+    if (confirmPasswordController.text != password) {
+      return 'Passwords do not match.';
     }
     if (!termsAccepted) return 'Please accept the Terms & Conditions.';
     return null;
@@ -81,6 +96,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
   String? selectedMonth;
   String? selectedDay;
@@ -93,6 +111,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     userNameController.dispose();
     emailController.dispose();
     phoneController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
     _termsTapRecognizer.dispose();
     super.dispose();
   }
@@ -120,42 +140,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
           _nationalPhoneNumber(phoneController.text)!,
       dob: dob,
       displayName: userNameController.text.trim(),
+      password: passwordController.text,
     );
     try {
-      final service = RegisterService();
-      final resp = await service.registerauth(req);
-      if (resp.statusCode == 201 && resp.data != null) {
-        await SharedPrefHelper.saveName(
-          resp.data!.firstName,
-          resp.data!.lastName,
-        );
-        await SharedPrefHelper.saveStargazerIdAndCreatedAt(
-          resp.data!.id,
-          resp.data!.createdAt,
-        );
-        await SharedPrefServices.setStargazerId(resp.data!.id);
-        await SharedPrefServices.setStargazerCreatedAt(resp.data!.createdAt);
-        if (!mounted) return;
-        // Replace /register (in the router and in browser history) so Back
-        // from the success page goes to onboarding, not the filled form.
-        Router.neglect(
-          context,
-          () => context.pushReplacement(
-            '/success',
-            extra: {
-              'firstName': resp.data!.firstName,
-              'lastName': resp.data!.lastName,
-            },
+      // Sends the registration code; the OTP screen registers once it's entered.
+      final resp = await RegisterService().emailCheck(
+        email: req.email,
+        displayName: req.displayName,
+      );
+      if (!mounted) return;
+      if (resp.success && resp.resetToken != null) {
+        // Pushed without a URL so the password never lands in browser history.
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => OtpScreen(request: req, code: resp.resetToken!),
           ),
         );
       } else {
-        if (!mounted) return;
         setState(() {
-          _errorMessage = resp.message ?? 'Registration failed.';
+          _errorMessage = resp.message ?? 'Could not send verification code.';
         });
       }
     } catch (e) {
-      debugPrint('registerauth failed: $e');
+      debugPrint('emailCheck failed: $e');
       if (!mounted) return;
       setState(() {
         _errorMessage =
@@ -234,6 +241,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               userNameController: userNameController,
                               emailController: emailController,
                               phoneController: phoneController,
+                              passwordController: passwordController,
+                              confirmPasswordController:
+                                  confirmPasswordController,
                               selectedMonth: selectedMonth,
                               selectedDay: selectedDay,
                               selectedYear: selectedYear,
@@ -311,6 +321,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           userNameController: userNameController,
                           emailController: emailController,
                           phoneController: phoneController,
+                          passwordController: passwordController,
+                          confirmPasswordController: confirmPasswordController,
                           selectedMonth: selectedMonth,
                           selectedDay: selectedDay,
                           selectedYear: selectedYear,
@@ -353,6 +365,8 @@ class _RegisterContent extends StatelessWidget {
   final TextEditingController userNameController;
   final TextEditingController emailController;
   final TextEditingController phoneController;
+  final TextEditingController passwordController;
+  final TextEditingController confirmPasswordController;
   final String? selectedMonth;
   final String? selectedDay;
   final String? selectedYear;
@@ -373,6 +387,8 @@ class _RegisterContent extends StatelessWidget {
     required this.userNameController,
     required this.emailController,
     required this.phoneController,
+    required this.passwordController,
+    required this.confirmPasswordController,
     required this.selectedMonth,
     required this.selectedDay,
     required this.selectedYear,
@@ -568,7 +584,7 @@ class _RegisterContent extends StatelessWidget {
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            "Display Name *",
+            "User Name *",
             style: GoogleFonts.poppins(
               color: kgoldColor,
               fontSize: isWide ? 18 : 14,
@@ -593,7 +609,7 @@ class _RegisterContent extends StatelessWidget {
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            "Email Address *",
+            "User Account Email *",
             style: GoogleFonts.poppins(
               color: kgoldColor,
               fontSize: isWide ? 18 : 14,
@@ -602,7 +618,7 @@ class _RegisterContent extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         _goldBorderFieldWithLabel(
-          hint: 'Enter your Email',
+          hint: 'Enter your User Account Email',
           controller: emailController,
           keyboardType: TextInputType.emailAddress,
           autocorrect: false,
@@ -643,6 +659,56 @@ class _RegisterContent extends StatelessWidget {
           controller: phoneController,
           initialCountryCode: selectedCountryCode,
           onCountryChanged: onChangedCountry,
+        ),
+        SizedBox(height: isWide ? 8 : 15),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Password *",
+            style: GoogleFonts.poppins(
+              color: kgoldColor,
+              fontSize: isWide ? 18 : 14,
+            ),
+          ),
+        ),
+        const SizedBox(height: 6),
+        _goldBorderFieldWithLabel(
+          hint: 'Enter Password',
+          controller: passwordController,
+          obscureText: true,
+          autocorrect: false,
+          autofillHints: const [AutofillHints.newPassword],
+        ),
+        const SizedBox(height: 4),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'Min 6 characters with uppercase, lowercase, number & special character.',
+            style: GoogleFonts.poppins(
+              color: Colors.white70,
+              fontSize: isWide ? 13 : 11,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ),
+        SizedBox(height: isWide ? 8 : 15),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Confirm Password *",
+            style: GoogleFonts.poppins(
+              color: kgoldColor,
+              fontSize: isWide ? 18 : 14,
+            ),
+          ),
+        ),
+        const SizedBox(height: 6),
+        _goldBorderFieldWithLabel(
+          hint: 'Re-enter Password',
+          controller: confirmPasswordController,
+          obscureText: true,
+          autocorrect: false,
+          autofillHints: const [AutofillHints.newPassword],
         ),
         SizedBox(height: isWide ? 8 : 15),
         Row(
@@ -765,6 +831,7 @@ Widget _goldBorderFieldWithLabel({
   TextCapitalization textCapitalization = TextCapitalization.none,
   bool autocorrect = true,
   Iterable<String>? autofillHints,
+  bool obscureText = false,
 }) {
   return _GoldBorderFieldWithLabel(
     hint: hint,
@@ -775,6 +842,7 @@ Widget _goldBorderFieldWithLabel({
     textCapitalization: textCapitalization,
     autocorrect: autocorrect,
     autofillHints: autofillHints,
+    obscureText: obscureText,
   );
 }
 
@@ -838,7 +906,7 @@ class _DisplayNameFieldState extends State<_DisplayNameField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _goldBorderFieldWithLabel(
-          hint: 'Display Name',
+          hint: 'User Name',
           controller: widget.controller,
           inputFormatters: [_formatter],
           keyboardType: TextInputType.text,
@@ -874,6 +942,9 @@ class _GoldBorderFieldWithLabel extends StatefulWidget {
   final TextCapitalization textCapitalization;
   final bool autocorrect;
   final Iterable<String>? autofillHints;
+
+  /// Hides the text (for passwords) and shows an eye button to reveal it.
+  final bool obscureText;
   const _GoldBorderFieldWithLabel({
     required this.hint,
     this.controller,
@@ -883,6 +954,7 @@ class _GoldBorderFieldWithLabel extends StatefulWidget {
     this.textCapitalization = TextCapitalization.none,
     this.autocorrect = true,
     this.autofillHints,
+    this.obscureText = false,
   });
 
   @override
@@ -893,6 +965,7 @@ class _GoldBorderFieldWithLabel extends StatefulWidget {
 class _GoldBorderFieldWithLabelState extends State<_GoldBorderFieldWithLabel> {
   String? value;
   bool isGold = false;
+  bool _textHidden = true;
   late final TextEditingController controller;
   final FocusNode focusNode = FocusNode();
 
@@ -935,6 +1008,7 @@ class _GoldBorderFieldWithLabelState extends State<_GoldBorderFieldWithLabel> {
       autocorrect: widget.autocorrect,
       enableSuggestions: widget.autocorrect,
       autofillHints: widget.autofillHints,
+      obscureText: widget.obscureText && _textHidden,
       inputFormatters: widget.isPhone
           ? [
               FilteringTextInputFormatter.digitsOnly,
@@ -946,6 +1020,18 @@ class _GoldBorderFieldWithLabelState extends State<_GoldBorderFieldWithLabel> {
         fillColor: const Color(0xFF1C1C1E),
         hintText: widget.hint,
         hintStyle: const TextStyle(color: Colors.white38),
+        suffixIcon: widget.obscureText
+            ? IconButton(
+                icon: Icon(
+                  _textHidden
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
+                ),
+                color: isGold ? kgoldColor : Colors.white38,
+                tooltip: _textHidden ? 'Show password' : 'Hide password',
+                onPressed: () => setState(() => _textHidden = !_textHidden),
+              )
+            : null,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(
@@ -1387,7 +1473,6 @@ String? _nationalPhoneNumber(String text) {
 class _PhoneNumberFormatter extends TextInputFormatter {
   final IsoCode? Function() isoCode;
   _PhoneNumberFormatter(this.isoCode);
-
 
   @override
   TextEditingValue formatEditUpdate(

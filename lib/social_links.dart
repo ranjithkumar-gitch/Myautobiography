@@ -47,8 +47,8 @@ class SocialLinks extends StatelessWidget {
       children: [
         for (final link in _links)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: _SocialButton(link: link, size: isWide ? 44 : 40),
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: _SocialButton(link: link, size: isWide ? 34 : 30),
           ),
       ],
     );

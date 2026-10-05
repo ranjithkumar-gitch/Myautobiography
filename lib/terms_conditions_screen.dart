@@ -10,7 +10,14 @@ import 'package:myautobiography/terms_service.dart';
 import 'package:myautobiography/theme_notifier.dart';
 
 class TermsConditionsScreen extends StatefulWidget {
-  const TermsConditionsScreen({Key? key}) : super(key: key);
+  /// Also used for the Privacy Policy page, with its own title and API.
+  final String title;
+  final Future<TermsResponse> Function() fetch;
+  const TermsConditionsScreen({
+    Key? key,
+    this.title = 'Terms & Conditions',
+    this.fetch = TermsService.fetchTerms,
+  }) : super(key: key);
 
   @override
   State<TermsConditionsScreen> createState() => _TermsConditionsScreenState();
@@ -22,11 +29,11 @@ class _TermsConditionsScreenState extends State<TermsConditionsScreen> {
   @override
   void initState() {
     super.initState();
-    _termsFuture = TermsService.fetchTerms();
+    _termsFuture = widget.fetch();
   }
 
   void _retry() {
-    setState(() => _termsFuture = TermsService.fetchTerms());
+    setState(() => _termsFuture = widget.fetch());
   }
 
   void _onBackPressed() {
@@ -64,7 +71,7 @@ class _TermsConditionsScreenState extends State<TermsConditionsScreen> {
         title: ShaderMask(
           shaderCallback: (bounds) => goldTextGradient.createShader(bounds),
           child: Text(
-            'Terms & Conditions',
+            widget.title,
             style: GoogleFonts.cinzel(
               color: Colors.white,
               fontSize: isWide ? 24 : 18,
@@ -98,7 +105,7 @@ class _TermsConditionsScreenState extends State<TermsConditionsScreen> {
                     terms.data!.description.trim().isEmpty) {
                   return _ErrorView(
                     message:
-                        terms?.message ?? 'Could not load Terms & Conditions.',
+                        terms?.message ?? 'Could not load ${widget.title}.',
                     onRetry: _retry,
                   );
                 }
