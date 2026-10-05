@@ -1,0 +1,44 @@
+# Flutter web app on Namecheap (Apache / LiteSpeed).
+# Copied into build/web by `flutter build web`; upload it with the rest of build/web.
+
+Options -Indexes
+
+# --- Routing -----------------------------------------------------------------
+# The app uses clean URLs (/terms-conditions). Send any path that isn't a real
+# file or folder to index.html so refreshing or opening a deep link works.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# --- MIME types ----------------------------------------------------------------
+<IfModule mod_mime.c>
+  AddType application/wasm .wasm
+  AddType image/webp .webp
+  AddType application/manifest+json .webmanifest
+</IfModule>
+
+# --- Compression (main.dart.js ~3.3 MB -> ~1 MB) -----------------------------------
+<IfModule mod_brotli.c>
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/css text/plain application/javascript text/javascript application/json application/manifest+json application/wasm image/svg+xml font/otf font/ttf
+</IfModule>
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain application/javascript text/javascript application/json application/manifest+json application/wasm image/svg+xml font/otf font/ttf
+</IfModule>
+
+# --- Caching ---------------------------------------------------------------------
+# Flutter does not put version hashes in its file names, so the app shell and code
+# must be revalidated on every visit (a cheap 304 when unchanged) or users could
+# keep running an old version after a deploy. Images and fonts change rarely and
+# are cached for a week.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|js|json|webmanifest)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <FilesMatch "\.(png|jpe?g|webp|gif|svg|ico|otf|ttf|woff2?|wasm|bin|frag)$">
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+</IfModule>

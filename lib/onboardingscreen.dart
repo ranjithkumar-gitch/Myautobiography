@@ -3,8 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:myautobiography/constants/colors.dart';
 import 'package:myautobiography/landing_page_back_handler_stub.dart'
     if (dart.library.html) 'package:myautobiography/landing_page_back_handler_web.dart';
-import 'package:myautobiography/register_screen.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/foundation.dart';
+import 'package:myautobiography/social_links.dart';
 import 'package:myautobiography/theme_notifier.dart';
 
 // import 'package:flutter_svg/flutter_svg.dart';
@@ -29,16 +30,9 @@ class _OnBoardingscreenState extends State<OnBoardingscreen> {
     if (!_imagesCached) {
       _imagesCached = true;
       precacheImage(const AssetImage('assets/bg_1411.jpg'), context).ignore();
-      precacheImage(
-        const NetworkImage(
-          'https://dl9325jolfmzn.cloudfront.net/assets/image1.png',
-        ),
-        context,
-      ).ignore();
-      precacheImage(
-        const AssetImage('assets/App_logo_2.png'),
-        context,
-      ).ignore();
+      // image1.png from CloudFront is not precached: the CDN sends no CORS
+      // header, so the fetch always fails on web. Image.network shows it
+      // through an <img> element instead (WebHtmlElementStrategy.fallback).
     }
   }
 
@@ -53,18 +47,8 @@ class _OnBoardingscreenState extends State<OnBoardingscreen> {
       return _buildLandingPage(
         Scaffold(
           backgroundColor: Colors.black,
-          extendBodyBehindAppBar: true,
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(120),
-            child: AppBar(
-              backgroundColor: Colors.black.withOpacity(0.2),
-              elevation: 0,
-              automaticallyImplyLeading: false,
-              titleSpacing: 0,
-              title: Padding(padding: const EdgeInsets.only(left: 40, top: 10)),
-            ),
-          ),
           body: Stack(
+            fit: StackFit.expand,
             children: [
               Positioned.fill(
                 child: Image.asset('assets/bg_1411.jpg', fit: BoxFit.cover),
@@ -233,12 +217,7 @@ class _OnBoardingscreenState extends State<OnBoardingscreen> {
                                       ),
                                       child: OutlinedButton(
                                         onPressed: () {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  RegisterScreen(),
-                                            ),
-                                          );
+                                          context.push('/register');
                                         },
                                         style: OutlinedButton.styleFrom(
                                           shape: RoundedRectangleBorder(
@@ -309,6 +288,8 @@ class _OnBoardingscreenState extends State<OnBoardingscreen> {
                                     ),
                                   ],
                                 ),
+                                const SizedBox(height: 28),
+                                const SocialLinks(isWide: true),
                               ],
                             ),
                           ),
@@ -328,18 +309,8 @@ class _OnBoardingscreenState extends State<OnBoardingscreen> {
     return _buildLandingPage(
       Scaffold(
         backgroundColor: Colors.black,
-        extendBodyBehindAppBar: true,
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(80),
-          child: AppBar(
-            backgroundColor: Colors.black.withValues(alpha: 0.2),
-            elevation: 0,
-            automaticallyImplyLeading: false,
-            titleSpacing: 0,
-            title: Padding(padding: const EdgeInsets.only(left: 16, top: 8)),
-          ),
-        ),
         body: Stack(
+          fit: StackFit.expand,
           children: [
             Positioned.fill(
               child: Image.asset('assets/bg_1411.jpg', fit: BoxFit.cover),
@@ -357,10 +328,13 @@ class _OnBoardingscreenState extends State<OnBoardingscreen> {
                         SizedBox(
                           height: 365,
                           width: 365,
-                          child: Image.asset(
-                            'assets/App_logo_2.png',
+                          child: Image.network(
+                            'https://dl9325jolfmzn.cloudfront.net/assets/image1.png',
                             fit: BoxFit.contain,
-                            cacheWidth: 365,
+                            webHtmlElementStrategy:
+                                WebHtmlElementStrategy.fallback,
+                            errorBuilder: (context, error, stackTrace) =>
+                                const SizedBox.shrink(),
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -419,22 +393,11 @@ class _LandingPageBackGuardState extends State<_LandingPageBackGuard> {
 
   void _handleBrowserBackAttempt() {
     if (!mounted) return;
+    // Keep the visitor on the landing page. When another page (e.g.
+    // /register) is on top, go_router handles the browser back itself.
     final route = ModalRoute.of(context);
     if (route?.isCurrent ?? true) {
       _backHandler.retainCurrentEntry();
-      return;
-    }
-
-    final navigator = Navigator.of(context);
-    if (navigator.canPop()) {
-      navigator.pop();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        final currentRoute = ModalRoute.of(context);
-        if (currentRoute?.isCurrent ?? true) {
-          _backHandler.retainCurrentEntry();
-        }
-      });
     }
   }
 
@@ -565,9 +528,7 @@ class _OnboardingContent extends StatelessWidget {
               ),
               child: OutlinedButton(
                 onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => RegisterScreen()),
-                  );
+                  context.push('/register');
                 },
                 style: OutlinedButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -624,6 +585,8 @@ class _OnboardingContent extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: 24),
+        const SocialLinks(isWide: false),
         const SizedBox(height: 20),
       ],
     );

@@ -1,10 +1,10 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:myautobiography/admin/loginPage.dart';
-import 'package:myautobiography/admin/dashboard.dart';
 import 'package:myautobiography/onboardingscreen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
-import 'package:myautobiography/request_as_star_screen.dart';
+import 'package:myautobiography/register_screen.dart';
+import 'package:myautobiography/success_screen2.dart';
 import 'package:myautobiography/terms_conditions_screen.dart';
 
 void main() {
@@ -14,12 +14,27 @@ void main() {
   runApp(const MyApp());
 }
 
-bool isAdminLoggedIn = false;
 final GoRouter _router = GoRouter(
   initialLocation: '/',
   routes: [
     // --- User/Customer Route ---
     GoRoute(path: '/', builder: (context, state) => const OnBoardingscreen()),
+    GoRoute(
+      path: '/register',
+      builder: (context, state) => const RegisterScreen(),
+    ),
+    GoRoute(
+      path: '/success',
+      // Only reachable right after registering; a refresh has no names.
+      redirect: (context, state) => state.extra is Map ? null : '/',
+      builder: (context, state) {
+        final names = state.extra as Map;
+        return SuccessScreen2(
+          firstName: names['firstName'] as String?,
+          lastName: names['lastName'] as String?,
+        );
+      },
+    ),
     GoRoute(
       path: '/terms-conditions',
       builder: (context, state) => const TermsConditionsScreen(),
@@ -28,24 +43,6 @@ final GoRouter _router = GoRouter(
     //   path: '/',
     //   builder: (context, state) => const RequestAsStarScreen(),
     // ),
-
-    // --- Admin Route ---
-    GoRoute(
-      path: '/hvr/admin',
-      builder: (context, state) => const AdminLoginPage(),
-      redirect: (context, state) {
-        if (isAdminLoggedIn) return '/hvr/admin/dashboard';
-        return null;
-      },
-    ),
-    GoRoute(
-      path: '/hvr/admin/dashboard',
-      builder: (context, state) => const DashboardPage(),
-      redirect: (context, state) {
-        if (!isAdminLoggedIn) return '/hvr/admin';
-        return null;
-      },
-    ),
   ],
   // Error page for 404s
   errorBuilder: (context, state) =>
@@ -60,6 +57,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
+      // Without this the country picker shows native names ("भारत"), so
+      // searching "India" finds nothing.
+      localizationsDelegates: const [
+        CountryLocalizations.delegate,
+        DefaultMaterialLocalizations.delegate,
+        DefaultWidgetsLocalizations.delegate,
+      ],
       routerConfig: _router,
     );
   }

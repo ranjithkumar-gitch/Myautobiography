@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myautobiography/browser_history.dart';
 import 'package:myautobiography/constants/colors.dart';
 import 'package:myautobiography/models/terms_response.dart';
 import 'package:myautobiography/terms_service.dart';
@@ -28,11 +30,19 @@ class _TermsConditionsScreenState extends State<TermsConditionsScreen> {
   }
 
   void _onBackPressed() {
-    // Opened directly by URL (e.g. /terms-conditions on web) there is nothing to pop.
     if (context.canPop()) {
-      context.pop();
+      if (kIsWeb) {
+        // Go back through the browser so the /terms-conditions entry is
+        // removed from history; context.pop() would add a new entry instead,
+        // leaving Terms reachable with the browser Back button.
+        browserHistoryBack();
+      } else {
+        context.pop();
+      }
     } else {
-      context.go('/');
+      // Opened directly by URL: nothing to pop. Replace this history entry
+      // with the register page so Terms isn't left behind.
+      Router.neglect(context, () => context.go('/register'));
     }
   }
 

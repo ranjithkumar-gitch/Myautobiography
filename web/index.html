@@ -31,8 +31,44 @@
 
   <title>My Autobiography</title>
   <link rel="manifest" href="manifest.json">
+
+  <!-- Loading screen shown until Flutter paints its first frame. -->
+  <style>
+    html, body { margin: 0; height: 100%; background: #000; }
+    #app-loading {
+      position: fixed; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 20px;
+      background: #000; transition: opacity 0.3s ease;
+    }
+    #app-loading.hidden { opacity: 0; pointer-events: none; }
+    #app-loading .spinner {
+      width: 48px; height: 48px; border-radius: 50%;
+      border: 3px solid rgba(193, 142, 59, 0.2); border-top-color: #c18e3b;
+      animation: app-loading-spin 0.9s linear infinite;
+    }
+    #app-loading .label {
+      color: #c18e3b; font: 500 14px/1 system-ui, -apple-system, sans-serif;
+      letter-spacing: 4px; text-transform: uppercase;
+    }
+    @keyframes app-loading-spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) {
+      #app-loading .spinner { animation-duration: 2.5s; }
+    }
+  </style>
 </head>
 <body>
+  <div id="app-loading" role="status" aria-label="Loading">
+    <div class="spinner"></div>
+    <div class="label">My Autobiography</div>
+  </div>
+  <script>
+    window.addEventListener('flutter-first-frame', function () {
+      var el = document.getElementById('app-loading');
+      if (!el) return;
+      el.classList.add('hidden');
+      setTimeout(function () { el.remove(); }, 400);
+    });
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

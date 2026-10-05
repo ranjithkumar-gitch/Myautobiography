@@ -8,26 +8,15 @@ import 'register_response.dart';
 class RegisterService {
   Future<RegisterResponse> registerauth(RegisterRequest requestModel) async {
     String url = "${AppConstant.mabBaseURL}stargazers/register-v1";
-    print("now printing register data");
-    print(url);
-    print(requestModel.toJson());
 
-    try {
-      final response = await http.post(
-        Uri.parse(url),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(requestModel.toJson()),
-      );
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(requestModel.toJson()),
+    );
 
-      print("response.body requestModel ${jsonEncode(requestModel.toJson())}");
-      print("response.body register ${response.body}");
-      print("response.body statusCode ${response.statusCode}");
-
-      // Handle all status codes with the same parser
-      return RegisterResponse.fromJson(jsonDecode(response.body));
-    } catch (e) {
-      print('registerauth exception: $e');
-      rethrow;
-    }
+    // Handle all status codes with the same parser. A non-JSON body (e.g. a
+    // gateway error page) throws, and the screen shows a friendly message.
+    return RegisterResponse.fromJson(jsonDecode(response.body));
   }
 }

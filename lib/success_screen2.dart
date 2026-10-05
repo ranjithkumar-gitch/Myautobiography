@@ -23,27 +23,12 @@ class SuccessScreen2 extends StatelessWidget {
         : '';
     final isWide = MediaQuery.of(context).size.width > 900;
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(isWide ? 100 : 80),
-        child: AppBar(
-          backgroundColor: Colors.black.withValues(alpha: 0.2),
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          titleSpacing: 0,
-          title: Padding(
-            padding: EdgeInsets.only(
-              left: isWide ? 40 : 16,
-              top: isWide ? 10 : 8,
-            ),
-          ),
-        ),
-      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final isWeb = kIsWeb;
           final isWide = isWeb && constraints.maxWidth > 900;
           return Stack(
+            fit: StackFit.expand,
             children: [
               Positioned.fill(
                 child: Image.asset('assets/bg_1411.jpg', fit: BoxFit.cover),
@@ -58,14 +43,8 @@ class SuccessScreen2 extends StatelessWidget {
                       color: Colors.transparent,
                       child: InkWell(
                         borderRadius: BorderRadius.circular(24),
-                        onTap: () {
-                          Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                              builder: (context) => OnBoardingscreen(),
-                            ),
-                            (route) => false,
-                          );
-                        },
+                        onTap: () =>
+                            Router.neglect(context, () => context.go('/')),
                         // child: Container(
                         //   width: 40,
                         //   height: 40,
@@ -530,14 +509,9 @@ class _BackToHomeButton extends StatelessWidget {
       width: double.infinity,
       height: isWide ? 46 : 50,
       child: OutlinedButton(
-        onPressed: () {
-          // Register/Success were opened with Navigator.push, so go_router's
-          // location is still '/' and context.go('/') alone is a no-op.
-          // Pop those screens first, then make sure we land on the home route.
-          final router = GoRouter.of(context);
-          Navigator.of(context).popUntil((route) => route.isFirst);
-          router.go('/');
-        },
+        // Replace the current history entry so browser Back doesn't return
+        // to the success page.
+        onPressed: () => Router.neglect(context, () => context.go('/')),
         style: OutlinedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),

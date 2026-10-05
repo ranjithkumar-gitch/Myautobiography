@@ -89,29 +89,8 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
         thickness: MaterialStateProperty.all(8),
       ),
       child: Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(isWide ? 100 : 80),
-          child: AppBar(
-            backgroundColor: Colors.black.withValues(alpha: 0.2),
-            elevation: 0,
-            // leading: IconButton(
-            //   icon: const Icon(Icons.arrow_back_ios_new_rounded),
-            //   color: kgoldColor,
-            //   onPressed: _onBackPressed,
-            //   tooltip: 'Back',
-            // ),
-            automaticallyImplyLeading: false,
-            titleSpacing: 0,
-            title: Padding(
-              padding: EdgeInsets.only(
-                left: isWide ? 40 : 4,
-                top: isWide ? 10 : 8,
-              ),
-            ),
-          ),
-        ),
         body: Stack(
+          fit: StackFit.expand,
           children: [
             Positioned.fill(
               child: Image.asset('assets/bg_1411.jpg', fit: BoxFit.cover),

@@ -7,13 +7,12 @@ import 'package:flutter/services.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+import 'package:phone_numbers_parser/phone_numbers_parser.dart';
 import 'package:myautobiography/app_shared_preferences.dart';
 import 'package:myautobiography/constants/colors.dart';
 import 'package:myautobiography/models/register_request.dart';
-import 'package:myautobiography/onboardingscreen.dart';
 import 'package:myautobiography/register_service.dart';
 import 'package:myautobiography/shared_pref_helper.dart';
-import 'package:myautobiography/success_screen2.dart';
 import 'package:myautobiography/theme_notifier.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/gestures.dart';
@@ -38,6 +37,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
     context.push('/terms-conditions');
   }
 
+  static final _emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+
+  // Returns the first problem with the form, or null when it is valid.
+  String? _validate() {
+    if (firstNameController.text.trim().isEmpty) {
+      return 'Please enter your first name.';
+    }
+    if (lastNameController.text.trim().isEmpty) {
+      return 'Please enter your last name.';
+    }
+    final displayName = userNameController.text.trim();
+    if (displayName.isEmpty) return 'Please enter a display name.';
+    if (!RegExp(r'^[A-Za-z0-9]+$').hasMatch(displayName)) {
+      return 'Display name can only contain letters and numbers. Spaces and special characters are not allowed.';
+    }
+    final email = emailController.text.trim();
+    if (email.isEmpty) return 'Please enter your email address.';
+    if (!_emailRegex.hasMatch(email)) {
+      return 'Please enter a valid email address.';
+    }
+    if (selectedMonth == null || selectedDay == null || selectedYear == null) {
+      return 'Please select your full date of birth.';
+    }
+    if (_digitsOnly(phoneController.text).isEmpty ||
+        selectedCountryCode == null) {
+      return 'Please enter your phone number.';
+    }
+    if (_nationalPhoneNumber(phoneController.text) == null) {
+      return 'Please enter a 10-digit phone number.';
+    }
+    if (!termsAccepted) return 'Please accept the Terms & Conditions.';
+    return null;
+  }
+
   bool termsAccepted = false;
   CountryCode? selectedCountryCode = CountryCode.fromCountryCode('US');
   bool _isLoading = false;
@@ -60,38 +93,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
     userNameController.dispose();
     emailController.dispose();
     phoneController.dispose();
+    _termsTapRecognizer.dispose();
     super.dispose();
   }
 
   void _onRegister() async {
+    final validationError = _validate();
+    if (validationError != null) {
+      setState(() => _errorMessage = validationError);
+      return;
+    }
     setState(() {
       _isLoading = true;
       _errorMessage = null;
     });
-    if (firstNameController.text.isEmpty ||
-        lastNameController.text.isEmpty ||
-        userNameController.text.isEmpty ||
-        emailController.text.isEmpty ||
-        phoneController.text.isEmpty ||
-        selectedCountryCode == null ||
-        selectedDay == null ||
-        selectedMonth == null ||
-        selectedYear == null ||
-        !termsAccepted) {
-      setState(() {
-        _isLoading = false;
-        _errorMessage = 'Please fill all fields and accept terms.';
-      });
-      return;
-    }
-    if (!RegExp(r'^[A-Za-z0-9]+$').hasMatch(userNameController.text)) {
-      setState(() {
-        _isLoading = false;
-        _errorMessage =
-            'Display name can only contain letters and numbers. Spaces and special characters are not allowed.';
-      });
-      return;
-    }
     final dob =
         "${selectedMonth!.padLeft(2, '0')}-${selectedDay!.padLeft(2, '0')}-${selectedYear!}";
     final req = RegisterRequest(
@@ -99,8 +114,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       firstName: firstNameController.text.trim(),
       lastName: lastNameController.text.trim(),
       email: emailController.text.trim(),
+      // Digits only, without the display formatting.
       phone:
-          (selectedCountryCode?.dialCode ?? '') + phoneController.text.trim(),
+          (selectedCountryCode?.dialCode ?? '') +
+          _nationalPhoneNumber(phoneController.text)!,
       dob: dob,
       displayName: userNameController.text.trim(),
     );
@@ -119,40 +136,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
         await SharedPrefServices.setStargazerId(resp.data!.id);
         await SharedPrefServices.setStargazerCreatedAt(resp.data!.createdAt);
         if (!mounted) return;
-        Navigator.pushReplacement(
+        // Replace /register (in the router and in browser history) so Back
+        // from the success page goes to onboarding, not the filled form.
+        Router.neglect(
           context,
-          MaterialPageRoute(
-            builder: (context) => SuccessScreen2(
-              firstName: resp.data!.firstName,
-              lastName: resp.data!.lastName,
-            ),
+          () => context.pushReplacement(
+            '/success',
+            extra: {
+              'firstName': resp.data!.firstName,
+              'lastName': resp.data!.lastName,
+            },
           ),
         );
       } else {
+        if (!mounted) return;
         setState(() {
           _errorMessage = resp.message ?? 'Registration failed.';
         });
       }
     } catch (e) {
+      debugPrint('registerauth failed: $e');
+      if (!mounted) return;
       setState(() {
-        _errorMessage = 'Error: ' + e.toString();
+        _errorMessage =
+            'Something went wrong. Please check your connection and try again.';
       });
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final isWeb =
-        Theme.of(context).platform == TargetPlatform.fuchsia ||
-        identical(0, 0.0) &&
-            (Theme.of(context).platform.toString().contains('web') || false);
-    // Use kIsWeb if available
-    // import 'package:flutter/foundation.dart';
-    // final isWeb = kIsWeb;
     final width = MediaQuery.of(context).size.width;
     final isDesktopWeb = kIsWeb && width > 900;
 
@@ -160,19 +179,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       // Web/Desktop layout: logo left, content right, header top, and logo top left corner
       return Scaffold(
         backgroundColor: Colors.black,
-        extendBodyBehindAppBar: true,
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(100),
-          child: AppBar(
-            backgroundColor: Colors.black.withOpacity(0.2),
-            elevation: 0,
-            automaticallyImplyLeading: false,
-            titleSpacing: 0,
-            title: Padding(padding: const EdgeInsets.only(left: 40, top: 10)),
-          ),
-        ),
         // backgroundColor: Colors.black,
         body: Stack(
+          fit: StackFit.expand,
           children: [
             Positioned.fill(
               child: Image.asset('assets/bg_1411.jpg', fit: BoxFit.cover),
@@ -262,48 +271,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     // Default: mobile/tablet UI
     return Scaffold(
       backgroundColor: Colors.black,
-      extendBodyBehindAppBar: true,
-      // appBar: PreferredSize(
-      //   preferredSize: const Size.fromHeight(80),
-      //   child: AppBar(
-      //     backgroundColor: Colors.black.withValues(alpha: 0.2),
-      //     elevation: 0,
-      //     automaticallyImplyLeading: false,
-      //     titleSpacing: 0,
-      //     title: Padding(
-      //       padding: const EdgeInsets.only(left: 16, top: 8),
-      //       child: Row(
-      //         crossAxisAlignment: CrossAxisAlignment.center,
-      //         children: [
-      //           Image.asset('assets/App_logo_2.png', height: 44),
-      //           const SizedBox(width: 8),
-      //           Column(
-      //             crossAxisAlignment: CrossAxisAlignment.start,
-      //             children: [
-      //               Text(
-      //                 'MY AUTOBIOGRAPHY',
-      //                 style: GoogleFonts.bebasNeue(
-      //                   color: const Color(0xffc18e3b),
-      //                   fontSize: 18,
-      //                   letterSpacing: 2,
-      //                 ),
-      //               ),
-      //               Text(
-      //                 '"Live a Life & Leave a Legacy"',
-      //                 style: GoogleFonts.poppins(
-      //                   color: Colors.white70,
-      //                   fontSize: 10,
-      //                   fontStyle: FontStyle.italic,
-      //                 ),
-      //               ),
-      //             ],
-      //           ),
-      //         ],
-      //       ),
-      //     ),
-      //   ),
-      // ),
       body: Stack(
+        fit: StackFit.expand,
         children: [
           Positioned.fill(
             child: Image.asset('assets/bg_1411.jpg', fit: BoxFit.cover),
@@ -318,14 +287,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 16),
                       // Logo always on top, centered
                       SizedBox(
                         height: 250,
                         width: 250,
-                        child: Image.asset(
-                          'assets/App_logo_2.png',
+                        child: Image.network(
+                          'https://dl9325jolfmzn.cloudfront.net/assets/image1.png',
                           fit: BoxFit.contain,
+                          webHtmlElementStrategy:
+                              WebHtmlElementStrategy.fallback,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const SizedBox.shrink(),
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -648,7 +621,12 @@ class _RegisterContent extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 6),
-        _DateOfBirthRow(onChanged: onChangedDOB),
+        _DateOfBirthRow(
+          initialMonth: selectedMonth,
+          initialDay: selectedDay,
+          initialYear: selectedYear,
+          onChanged: onChangedDOB,
+        ),
         SizedBox(height: isWide ? 8 : 15),
         Align(
           alignment: Alignment.centerLeft,
@@ -663,6 +641,7 @@ class _RegisterContent extends StatelessWidget {
         const SizedBox(height: 6),
         _PhoneRow(
           controller: phoneController,
+          initialCountryCode: selectedCountryCode,
           onCountryChanged: onChangedCountry,
         ),
         SizedBox(height: isWide ? 8 : 15),
@@ -772,80 +751,6 @@ class _RegisterContent extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 15),
-      ],
-    );
-  }
-}
-
-class _GoldStarDividerWithText extends StatelessWidget {
-  const _GoldStarDividerWithText({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: Container(
-                margin: const EdgeInsets.only(right: 8),
-                height: 1.5,
-                color: kgoldColor.withOpacity(0.5),
-              ),
-            ),
-            // Icon(Icons.star, color: kgoldColor, size: 22),
-            Text(
-              'YOU ARE IN.',
-              style: GoogleFonts.poppins(
-                color: kgoldColor,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            Expanded(
-              child: Container(
-                margin: const EdgeInsets.only(left: 8),
-                height: 1.5,
-                color: kgoldColor.withOpacity(0.5),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        ShaderMask(
-          shaderCallback: (bounds) => goldTextGradient.createShader(bounds),
-          child: Text(
-            'let’s get you started',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.bebasNeue(
-              color: Colors.white,
-              fontSize: 50,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0,
-            ),
-          ),
-        ),
-
-        // Text(
-        //   'Your Story Starts Here.',
-        //   style: GoogleFonts.cinzel(
-        //     color: kgoldColor,
-        //     fontSize: 22,
-        //     fontWeight: FontWeight.w500,
-        //   ),
-        // ),
-        const SizedBox(height: 5),
-        Container(height: 1.5, width: 80, color: kgoldColor.withOpacity(0.5)),
-        const SizedBox(height: 5),
-
-        Text(
-          'Takes Less than 30 seconds.',
-          style: GoogleFonts.poppins(
-            color: kwhiteColor,
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
       ],
     );
   }
@@ -995,6 +900,7 @@ class _GoldBorderFieldWithLabelState extends State<_GoldBorderFieldWithLabel> {
   void initState() {
     super.initState();
     controller = widget.controller ?? TextEditingController();
+    isGold = controller.text.isNotEmpty;
     controller.addListener(_updateGold);
     focusNode.addListener(_updateGold);
   }
@@ -1007,6 +913,9 @@ class _GoldBorderFieldWithLabelState extends State<_GoldBorderFieldWithLabel> {
 
   @override
   void dispose() {
+    // The controller may be owned by the parent and outlive this field
+    // (e.g. when the layout switches between desktop and mobile).
+    controller.removeListener(_updateGold);
     if (widget.controller == null) controller.dispose();
     focusNode.dispose();
     super.dispose();
@@ -1058,22 +967,45 @@ class _GoldBorderFieldWithLabelState extends State<_GoldBorderFieldWithLabel> {
 }
 
 class _DateOfBirthRow extends StatefulWidget {
+  final String? initialMonth;
+  final String? initialDay;
+  final String? initialYear;
   final void Function(String? month, String? day, String? year)? onChanged;
-  const _DateOfBirthRow({this.onChanged});
+  const _DateOfBirthRow({
+    this.initialMonth,
+    this.initialDay,
+    this.initialYear,
+    this.onChanged,
+  });
   @override
   State<_DateOfBirthRow> createState() => _DateOfBirthRowState();
 }
 
 class _DateOfBirthRowState extends State<_DateOfBirthRow> {
-  String? selectedMonth;
-  String? selectedDay;
-  String? selectedYear;
+  late String? selectedMonth = widget.initialMonth;
+  late String? selectedDay = widget.initialDay;
+  late String? selectedYear = widget.initialYear;
 
-  int _daysInMonth(String? month) {
+  // February has 29 days only in leap years (or while no year is chosen yet).
+  int _daysInMonth(String? month, String? year) {
     if (month == null) return 31;
     final m = int.tryParse(month) ?? 0;
+    if (m == 2) {
+      final y = int.tryParse(year ?? '');
+      if (y == null) return 29;
+      final isLeap = (y % 4 == 0 && y % 100 != 0) || y % 400 == 0;
+      return isLeap ? 29 : 28;
+    }
     const days = [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     return (m >= 1 && m <= 12) ? days[m] : 31;
+  }
+
+  // Clears the chosen day if it no longer exists for the month/year.
+  void _clampDay() {
+    final day = int.tryParse(selectedDay ?? '');
+    if (day != null && day > _daysInMonth(selectedMonth, selectedYear)) {
+      selectedDay = null;
+    }
   }
 
   void _notifyParent() {
@@ -1084,7 +1016,7 @@ class _DateOfBirthRowState extends State<_DateOfBirthRow> {
 
   @override
   Widget build(BuildContext context) {
-    final maxDays = _daysInMonth(selectedMonth);
+    final maxDays = _daysInMonth(selectedMonth, selectedYear);
     return Row(
       children: [
         Expanded(
@@ -1108,13 +1040,9 @@ class _DateOfBirthRowState extends State<_DateOfBirthRow> {
               'December',
             ],
             onChanged: (val) {
-              final newMax = _daysInMonth(val);
-              final currentDay = int.tryParse(selectedDay ?? '');
               setState(() {
                 selectedMonth = val;
-                if (currentDay != null && currentDay > newMax) {
-                  selectedDay = null;
-                }
+                _clampDay();
               });
               _notifyParent();
             },
@@ -1150,7 +1078,10 @@ class _DateOfBirthRowState extends State<_DateOfBirthRow> {
               (i) => (DateTime.now().year - 18 - i).toString(),
             ),
             onChanged: (val) {
-              setState(() => selectedYear = val);
+              setState(() {
+                selectedYear = val;
+                _clampDay();
+              });
               _notifyParent();
             },
             isSelected: selectedYear != null,
@@ -1216,25 +1147,31 @@ Widget _dropdownBox({
 
 class _PhoneRow extends StatefulWidget {
   final TextEditingController? controller;
+  final CountryCode? initialCountryCode;
   final ValueChanged<CountryCode>? onCountryChanged;
-  const _PhoneRow({this.controller, this.onCountryChanged});
+  const _PhoneRow({
+    this.controller,
+    this.initialCountryCode,
+    this.onCountryChanged,
+  });
   @override
   State<_PhoneRow> createState() => _PhoneRowState();
 }
 
 class _PhoneRowState extends State<_PhoneRow> {
   late FocusNode _focusNode;
-  bool _hasFocus = false;
   bool _hasValue = false;
   late final TextEditingController _controller;
   // Default to +1 (US); the user can pick another country.
-  CountryCode? _selectedCountryCode = CountryCode.fromCountryCode('US');
+  late CountryCode? _selectedCountryCode =
+      widget.initialCountryCode ?? CountryCode.fromCountryCode('US');
 
   @override
   void initState() {
     super.initState();
     _focusNode = FocusNode();
     _controller = widget.controller ?? TextEditingController();
+    _hasValue = _controller.text.isNotEmpty;
     _focusNode.addListener(_handleFocusChange);
     _controller.addListener(_handleValueChange);
   }
@@ -1253,6 +1190,7 @@ class _PhoneRowState extends State<_PhoneRow> {
   void dispose() {
     _focusNode.removeListener(_handleFocusChange);
     _focusNode.dispose();
+    _controller.removeListener(_handleValueChange);
     if (widget.controller == null) _controller.dispose();
     super.dispose();
   }
@@ -1277,10 +1215,22 @@ class _PhoneRowState extends State<_PhoneRow> {
               child: CountryCodePicker(
                 onChanged: (code) {
                   setState(() => _selectedCountryCode = code);
-                  if (widget.onCountryChanged != null)
+                  // Re-format what was already typed for the new country.
+                  final formatted = _formatPhone(
+                    _digitsOnly(_controller.text),
+                    _isoCodeFor(code),
+                  );
+                  _controller.value = TextEditingValue(
+                    text: formatted,
+                    selection: TextSelection.collapsed(
+                      offset: formatted.length,
+                    ),
+                  );
+                  if (widget.onCountryChanged != null) {
                     widget.onCountryChanged!(code);
+                  }
                 },
-                initialSelection: 'US',
+                initialSelection: _selectedCountryCode?.code ?? 'US',
                 favorite: const [],
                 showCountryOnly: false,
                 showOnlyCountryWhenClosed: false,
@@ -1365,8 +1315,7 @@ class _PhoneRowState extends State<_PhoneRow> {
             textInputAction: TextInputAction.done,
             autofillHints: const [AutofillHints.telephoneNumberNational],
             inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(10),
+              _PhoneNumberFormatter(() => _isoCodeFor(_selectedCountryCode)),
             ],
             decoration: InputDecoration(
               filled: true,
@@ -1394,6 +1343,88 @@ class _PhoneRowState extends State<_PhoneRow> {
           ),
         ),
       ],
+    );
+  }
+}
+
+// --- Phone number formatting -------------------------------------------------
+
+String _digitsOnly(String text) => text.replaceAll(RegExp(r'\D'), '');
+
+IsoCode? _isoCodeFor(CountryCode? country) {
+  final code = country?.code;
+  if (code == null) return null;
+  for (final iso in IsoCode.values) {
+    if (iso.name == code) return iso;
+  }
+  return null;
+}
+
+/// Formats [digits] the way numbers are written in [iso]'s country, e.g.
+/// (201) 555-0123 for the US or 98765 43210 for India. Falls back to the plain
+/// digits when there is no format (e.g. while a leading trunk 0 is typed).
+String _formatPhone(String digits, IsoCode? iso) {
+  if (digits.isEmpty || iso == null) return digits;
+  try {
+    final formatted = PhoneNumber(isoCode: iso, nsn: digits).formatNsn();
+    return _digitsOnly(formatted) == digits ? formatted : digits;
+  } catch (_) {
+    return digits;
+  }
+}
+
+/// Phone numbers must be exactly this many digits, for every country.
+const _phoneDigits = 10;
+
+/// The number to send to the API (digits only), or null unless it has
+/// exactly [_phoneDigits] digits.
+String? _nationalPhoneNumber(String text) {
+  final digits = _digitsOnly(text);
+  return digits.length == _phoneDigits ? digits : null;
+}
+
+/// Keeps the phone field formatted for the selected country as the user types.
+class _PhoneNumberFormatter extends TextInputFormatter {
+  final IsoCode? Function() isoCode;
+  _PhoneNumberFormatter(this.isoCode);
+
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final cursor = newValue.selection.end.clamp(0, newValue.text.length);
+    var digits = _digitsOnly(newValue.text);
+    var digitsBeforeCursor = _digitsOnly(
+      newValue.text.substring(0, cursor),
+    ).length;
+
+    // Backspace over a formatting character like ")" or "-" removed no digit;
+    // delete the digit before it instead so the edit isn't undone.
+    if (newValue.text.length < oldValue.text.length &&
+        digits == _digitsOnly(oldValue.text) &&
+        digitsBeforeCursor > 0) {
+      digits =
+          digits.substring(0, digitsBeforeCursor - 1) +
+          digits.substring(digitsBeforeCursor);
+      digitsBeforeCursor--;
+    }
+
+    if (digits.length > _phoneDigits) return oldValue;
+
+    final formatted = _formatPhone(digits, isoCode());
+
+    // Put the cursor after the same number of digits as before.
+    var offset = 0;
+    var seen = 0;
+    while (offset < formatted.length && seen < digitsBeforeCursor) {
+      if (RegExp(r'\d').hasMatch(formatted[offset])) seen++;
+      offset++;
+    }
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: offset),
     );
   }
 }
