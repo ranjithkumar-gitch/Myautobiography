@@ -170,16 +170,16 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
                                                 goldTextGradient.createShader(
                                                   bounds,
                                                 ),
-                                            child: Text(
-                                              'What It Means to Be a Star',
-                                              textAlign: TextAlign.center,
-                                              style: GoogleFonts.poppins(
-                                                color: Colors.white,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                                letterSpacing: 0,
-                                              ),
-                                            ),
+                                            // child: Text(
+                                            //   'What It Means to Be a Star',
+                                            //   textAlign: TextAlign.center,
+                                            //   style: GoogleFonts.poppins(
+                                            //     color: Colors.white,
+                                            //     fontSize: 18,
+                                            //     fontWeight: FontWeight.bold,
+                                            //     letterSpacing: 0,
+                                            //   ),
+                                            // ),
                                           ),
                                           Expanded(
                                             child: Container(
@@ -397,16 +397,16 @@ class _RequestAsStarScreenState extends State<RequestAsStarScreen> {
                                 ShaderMask(
                                   shaderCallback: (bounds) =>
                                       goldTextGradient.createShader(bounds),
-                                  child: Text(
-                                    'What It Means to Be a Star',
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.cinzel(
-                                      color: Colors.white,
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 0,
-                                    ),
-                                  ),
+                                  // child: Text(
+                                  //   'What It Means to Be a Star',
+                                  //   textAlign: TextAlign.center,
+                                  //   style: GoogleFonts.cinzel(
+                                  //     color: Colors.white,
+                                  //     fontSize: 22,
+                                  //     fontWeight: FontWeight.bold,
+                                  //     letterSpacing: 0,
+                                  //   ),
+                                  // ),
                                 ),
                                 const SizedBox(height: 24),
                                 ShaderMask(

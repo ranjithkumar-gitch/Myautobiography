@@ -362,7 +362,7 @@ class SuccessScreen2 extends StatelessWidget {
                               const SizedBox(height: 10),
                               Text(
                                 welcomeName.isNotEmpty
-                                    ? "Welcome to $welcomeName, the world's first living legacy platform"
+                                    ? "Welcome $welcomeName, the world's first living legacy platform"
                                     : "Welcome to the world's first living legacy platform",
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.poppins(
