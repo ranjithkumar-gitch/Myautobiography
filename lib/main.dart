@@ -1,5 +1,6 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:myautobiography/browser_history.dart';
 import 'package:myautobiography/onboardingscreen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
@@ -12,11 +13,15 @@ void main() {
   usePathUrlStrategy();
   // Make context.push() update the browser address bar (e.g. /terms-conditions).
   GoRouter.optionURLReflectsImperativeAPIs = true;
+  setUpBrowserBackToHome();
   runApp(const MyApp());
 }
 
 final GoRouter _router = GoRouter(
   initialLocation: '/',
+  // The browser's Back button always returns to onboarding.
+  redirect: (context, state) =>
+      takeBrowserBack() && state.uri.path != '/' ? '/' : null,
   routes: [
     // --- User/Customer Route ---
     GoRoute(path: '/', builder: (context, state) => const OnBoardingscreen()),
